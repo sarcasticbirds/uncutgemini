@@ -81,12 +81,14 @@ Each seeded defect and its clean sibling stay in the same family/split.
 `split_frozen` is false: this is **not a complete freeze**. Historical families
 must be reconciled before a real freeze; no author-visible holdout is blind.
 
-Labels live only in `corpus/labels/`; `--without-labels` neither opens nor
-requires them (the aggregate bug denominator remains public manifest metadata).
+Per-case label artifacts live in `corpus/labels/`; `--without-labels` neither
+opens nor requires them (the aggregate bug denominator remains public metadata).
+The authoring generator embeds label specifications, and reference/context files
+also reveal expected behavior. Removing the label directory alone is not blinding.
 This permits a later Wren-controlled label store, but does not itself seal
 anything. Default verification includes labels. Do not edit/delete source labels
 to claim blinding; Wren must independently adjudicate, control and document the
-future seal and grading boundary.
+future seal and grading boundary, including isolation of authoring/reference data.
 
 `build_corpus.py NEW_DIRECTORY` deterministically regenerates the authored v1
 data and refuses an existing directory. Do not regenerate/relabel fixtures to
