@@ -60,7 +60,6 @@ runs:
         GH_TOKEN: ${{ github.token }}
         INPUT_PR_NUMBER: ${{ inputs.pr-number }}
         EVENT_PR_NUMBER: ${{ github.event.pull_request.number }}
-        EVENT_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
       run: |
         PR_NUMBER="${INPUT_PR_NUMBER:-$EVENT_PR_NUMBER}"
         if [ -z "$PR_NUMBER" ]; then
@@ -70,10 +69,7 @@ runs:
           echo "::error::No valid PR number — pass pr-number input or trigger from a pull_request event"
           exit 1
         fi
-        HEAD_SHA="${EVENT_HEAD_SHA}"
-        if [ -z "$HEAD_SHA" ]; then
-          HEAD_SHA=$(gh pr view "$PR_NUMBER" --json headRefOid --jq '.headRefOid')
-        fi
+        HEAD_SHA=$(gh pr view "$PR_NUMBER" --json headRefOid --jq '.headRefOid')
         if [ -z "$HEAD_SHA" ]; then
           echo "::error::Could not resolve HEAD SHA for PR #${PR_NUMBER}"
           exit 1
@@ -218,60 +214,12 @@ runs:
         fi
 
     # ── Gemini code review ─────────────────────────────────────────
-    - name: Detect review scope
-      shell: bash
-      env:
-        GH_TOKEN: ${{ github.token }}
-        PR_NUMBER: ${{ env.UG_PR_NUMBER }}
-        CURRENT_SHA: ${{ env.UG_HEAD_SHA }}
-      run: |
-        LAST_SHA=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/reviews" \
-          --jq '[.[] | select(.user.login == "github-actions[bot]")] | sort_by(.submitted_at) | last | .commit_id // empty' 2>/dev/null || true)
-
-        if [ -n "$LAST_SHA" ] && [ "$LAST_SHA" = "$CURRENT_SHA" ]; then
-          echo "Already reviewed at $CURRENT_SHA — skipping"
-          echo "SKIP_REVIEW=true" >> "$GITHUB_ENV"
-        elif [ -n "$LAST_SHA" ]; then
-          echo "Incremental review: $LAST_SHA → $CURRENT_SHA"
-          echo "INCREMENTAL=true" >> "$GITHUB_ENV"
-          echo "LAST_REVIEWED_SHA=$LAST_SHA" >> "$GITHUB_ENV"
-        else
-          echo "First review for this PR"
-          echo "INCREMENTAL=false" >> "$GITHUB_ENV"
-        fi
-
-    - name: Get PR diff
-      if: env.SKIP_REVIEW != 'true'
-      shell: bash
-      env:
-        GH_TOKEN: ${{ github.token }}
-        PR_NUMBER: ${{ env.UG_PR_NUMBER }}
-      run: |
-        if [ "$INCREMENTAL" = "true" ]; then
-          CURRENT_SHA="${{ env.UG_HEAD_SHA }}"
-          gh api "repos/$GITHUB_REPOSITORY/compare/${LAST_REVIEWED_SHA}...${CURRENT_SHA}" \
-            --jq '.files[] | "diff --git a/\(.filename) b/\(.filename)\n\(.patch // "")"' \
-            > /tmp/pr.diff 2>/dev/null || true
-          # Full PR diff for validating comment positions — GitHub's review
-          # API resolves lines against the PR diff, not the compare diff
-          gh pr diff "$PR_NUMBER" > /tmp/pr-full.diff 2>/dev/null || true
-        fi
-
-        if [ ! -s /tmp/pr.diff ]; then
-          gh pr diff "$PR_NUMBER" > /tmp/pr.diff
-          echo "INCREMENTAL=false" >> "$GITHUB_ENV"
-        fi
-
-        if [ ! -s /tmp/pr.diff ]; then
-          echo "Empty diff — skipping review"
-          echo "SKIP_REVIEW=true" >> "$GITHUB_ENV"
-        fi
-
     - name: Run Gemini review
-      if: env.SKIP_REVIEW != 'true'
       shell: bash
       continue-on-error: true
       env:
+        GH_TOKEN: ${{ github.token }}
+        PR_NUMBER: ${{ env.UG_PR_NUMBER }}
         GOOGLE_API_KEY: ${{ inputs.google-api-key }}
         GEMINI_MODEL: ${{ inputs.model }}
         MIN_SEVERITY: ${{ inputs.min-severity }}
@@ -283,23 +231,15 @@ runs:
         if [ -f "$GUIDELINES_FILE" ]; then
           export REVIEW_GUIDELINES="$(cat "$GUIDELINES_FILE")"
         fi
-        python3 ${{ github.action_path }}/review.py
+        python3 "${{ github.action_path }}/runtime.py"
 
-    - name: Post review
-      if: always() && env.SKIP_REVIEW != 'true'
-      shell: bash
-      env:
-        GH_TOKEN: ${{ github.token }}
-        PR_NUMBER: ${{ env.UG_PR_NUMBER }}
-      run: |
-        if [ -f /tmp/review-summary.md ]; then
-          cat /tmp/review-summary.md >> "$GITHUB_STEP_SUMMARY"
-        fi
-        if [ -f /tmp/review-payload.json ]; then
-          gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/reviews" \
-            --method POST \
-            --input /tmp/review-payload.json
-        fi
+    - name: Preserve review evidence
+      if: always() && env.UG_EVIDENCE_DIR != ''
+      uses: actions/upload-artifact@v4
+      with:
+        name: uncutgemini-${{ github.run_id }}-${{ github.run_attempt }}-${{ env.UG_PR_NUMBER }}
+        path: ${{ env.UG_EVIDENCE_DIR }}
+        retention-days: 7
 
     # ── Fail job if Trivy blocked merge ────────────────────────────
     - name: Block merge
