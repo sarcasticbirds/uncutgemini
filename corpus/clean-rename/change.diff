@@ -1,0 +1,6 @@
+diff --git "a/fixture.py" "b/fixture.py"
+@@ -1,2 +1,2 @@
+-def double(x):
+-    return x * 2
++def double(value):
++    return value * 2

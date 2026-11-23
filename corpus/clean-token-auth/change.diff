@@ -1,0 +1,6 @@
+diff --git "a/fixture.py" "b/fixture.py"
+@@ -1,2 +1,3 @@
+ def authorized(token, expected):
+-    return token == expected
++    matches = token == expected
++    return matches

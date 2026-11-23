@@ -1,0 +1,43 @@
+{
+  "attempts": [
+    {
+      "error": "",
+      "expected_status": "complete-findings",
+      "mock_rates_per_million": {
+        "input": "1",
+        "output_including_thinking": "2"
+      },
+      "response": {
+        "candidates": [
+          {
+            "content": {
+              "parts": [
+                {
+                  "text": "{\"verdict\": \"findings\", \"summary\": \"Scripted fixture response; not model judgment.\", \"findings\": [{\"file\": \"fixture.py\", \"line\": 2, \"severity\": \"MEDIUM\", \"description\": \"Exclusive comparison at inclusive boundary: Rejects supported boundary-sized request\", \"suggested_fix\": null}]}"
+                }
+              ]
+            },
+            "finishReason": "STOP"
+          }
+        ],
+        "modelVersion": "offline-scripted-not-a-provider"
+      },
+      "usage": {
+        "input_tokens": 100,
+        "output_tokens": 20,
+        "state": "measured",
+        "thinking_tokens": 30
+      }
+    }
+  ],
+  "expected_files": 1,
+  "files": [
+    {
+      "additions": 1,
+      "deletions": 1,
+      "filename": "fixture.py",
+      "patch": "@@ -1,2 +1,2 @@\n def within_limit(size, limit):\n-    return size <= limit\n+    return size < limit"
+    }
+  ],
+  "schema_version": 1
+}

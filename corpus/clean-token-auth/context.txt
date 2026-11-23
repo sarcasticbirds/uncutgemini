@@ -1,0 +1,2 @@
+Authored contract: token='wrong', expected='secret'; contract denies
+Fixture is inert synthetic overlay data, not code present at source Git revisions.

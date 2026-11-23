@@ -1,0 +1,7 @@
+{
+  "bugs": [],
+  "case_id": "clean-comment",
+  "clean_rationale": "No substantive source defect claimed under the supplied contract. Both versions satisfy the contract by static inspection; independent adjudication pending.",
+  "schema_version": 1,
+  "status": "hawk-provisional-unsealed"
+}

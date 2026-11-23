@@ -1,0 +1,2 @@
+Authored contract: size=10, limit=10; contract accepts inclusive limit
+Fixture is inert synthetic overlay data, not code present at source Git revisions.

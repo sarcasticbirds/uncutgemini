@@ -1,0 +1,5 @@
+{
+  "base_content": "def extend(values, item):\n    return values + [item]\n",
+  "file": "fixture.py",
+  "head_content": "def extend(values, item):\n    copied = list(values)\n    copied.append(item)\n    return copied\n"
+}

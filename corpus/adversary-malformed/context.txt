@@ -1,0 +1,2 @@
+Authored contract: Responses must satisfy strict runtime schema
+Fixture is inert synthetic overlay data, not code present at source Git revisions.

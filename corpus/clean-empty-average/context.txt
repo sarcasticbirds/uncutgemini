@@ -1,0 +1,2 @@
+Authored contract: values=[]; contract returns 0
+Fixture is inert synthetic overlay data, not code present at source Git revisions.

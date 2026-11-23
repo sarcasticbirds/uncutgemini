@@ -1,0 +1,18 @@
+{
+  "bugs": [
+    {
+      "file": "fixture.py",
+      "fix_evidence": "reference.txt restores the contract; static authored example, not an executed or historical fix",
+      "id": "integer-total",
+      "impact": "Undercounts repeated values",
+      "line": 2,
+      "root_cause": "Deduplicates multiplicities before aggregation",
+      "severity": "MEDIUM",
+      "trigger": "values=[3,3]; contract returns 6"
+    }
+  ],
+  "case_id": "seed-integer-total",
+  "clean_rationale": "",
+  "schema_version": 1,
+  "status": "hawk-provisional-unsealed"
+}

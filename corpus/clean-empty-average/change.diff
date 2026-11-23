@@ -1,0 +1,5 @@
+diff --git "a/fixture.py" "b/fixture.py"
+@@ -1,2 +1,2 @@
+ def average(values):
+-    return sum(values) / len(values) if values else 0
++    return 0 if not values else sum(values) / len(values)

@@ -1,0 +1,40 @@
+{
+  "attempts": [
+    {
+      "error": "",
+      "expected_status": "partial",
+      "mock_rates_per_million": {
+        "input": "1",
+        "output_including_thinking": "2"
+      },
+      "response": {
+        "candidates": [
+          {
+            "content": {
+              "parts": [
+                {
+                  "text": "{\"verdict\": \"clean\", \"summary\": \"Scripted fixture response; not model judgment.\", \"findings\": []}"
+                }
+              ]
+            },
+            "finishReason": "STOP"
+          }
+        ],
+        "modelVersion": "offline-scripted-not-a-provider"
+      },
+      "usage": {
+        "state": "missing"
+      }
+    }
+  ],
+  "expected_files": 1,
+  "files": [
+    {
+      "additions": 2,
+      "deletions": 2,
+      "filename": "fixture.py",
+      "patch": "@@ -1,2 +1,2 @@\n-def identity(x):\n-    return x\n+def identity(value):"
+    }
+  ],
+  "schema_version": 1
+}

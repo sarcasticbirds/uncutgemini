@@ -1,0 +1,2 @@
+Authored contract: Integer input returns twice its value
+Fixture is inert synthetic overlay data, not code present at source Git revisions.

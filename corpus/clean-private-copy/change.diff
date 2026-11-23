@@ -1,0 +1,7 @@
+diff --git "a/fixture.py" "b/fixture.py"
+@@ -1,2 +1,4 @@
+ def extend(values, item):
+-    return values + [item]
++    copied = list(values)
++    copied.append(item)
++    return copied

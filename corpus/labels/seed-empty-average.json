@@ -1,0 +1,18 @@
+{
+  "bugs": [
+    {
+      "file": "fixture.py",
+      "fix_evidence": "reference.txt restores the contract; static authored example, not an executed or historical fix",
+      "id": "empty-average",
+      "impact": "ZeroDivisionError for supported input",
+      "line": 2,
+      "root_cause": "Removed empty-input guard",
+      "severity": "MEDIUM",
+      "trigger": "values=[]; contract returns 0"
+    }
+  ],
+  "case_id": "seed-empty-average",
+  "clean_rationale": "",
+  "schema_version": 1,
+  "status": "hawk-provisional-unsealed"
+}

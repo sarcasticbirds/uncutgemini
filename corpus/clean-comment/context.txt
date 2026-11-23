@@ -1,0 +1,2 @@
+Authored contract: Returns the identical supplied object
+Fixture is inert synthetic overlay data, not code present at source Git revisions.

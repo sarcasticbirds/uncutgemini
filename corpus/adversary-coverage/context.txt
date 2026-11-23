@@ -1,0 +1,2 @@
+Authored contract: Missing patch tail prevents a model call and clean outcome
+Fixture is inert synthetic overlay data, not code present at source Git revisions.

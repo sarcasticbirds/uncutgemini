@@ -1,0 +1,2 @@
+Authored contract: Each explicitly recorded attempt remains in denominators and costs
+Fixture is inert synthetic overlay data, not code present at source Git revisions.

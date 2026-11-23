@@ -204,6 +204,12 @@ Your Trivy job is now built in — delete that too.
 - `gh` CLI (pre-installed on all GitHub-hosted runners)
 - A [Google AI API key](https://aistudio.google.com/apikey)
 
+## Offline protocol screen
+
+See [the provisional corpus and replay guide](corpus/README.md) for credential-free
+replay, hashes, label separation, scoring denominators and explicit inventory
+gaps. This is a scripted runtime screen, not a model-quality evaluation.
+
 ## License
 
 MIT

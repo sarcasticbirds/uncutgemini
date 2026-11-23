@@ -1,0 +1,5 @@
+diff --git "a/fixture.py" "b/fixture.py"
+@@ -1,2 +1,2 @@
+ def within_limit(size, limit):
+-    return size <= limit
++    return limit >= size

@@ -1,0 +1,18 @@
+{
+  "bugs": [
+    {
+      "file": "fixture.py",
+      "fix_evidence": "reference.txt restores the contract; static authored example, not an executed or historical fix",
+      "id": "token-auth",
+      "impact": "Any nonempty token authenticates",
+      "line": 2,
+      "root_cause": "Checks presence instead of equality",
+      "severity": "HIGH",
+      "trigger": "token='wrong', expected='secret'; contract denies"
+    }
+  ],
+  "case_id": "seed-token-auth",
+  "clean_rationale": "",
+  "schema_version": 1,
+  "status": "hawk-provisional-unsealed"
+}
