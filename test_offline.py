@@ -1,6 +1,8 @@
 """Offline corpus integrity, runtime-boundary and denominator regressions."""
+import ast
 import copy
 import datetime
+import inspect
 import json
 import os
 from pathlib import Path
@@ -42,6 +44,58 @@ class OfflineTests(unittest.TestCase):
         self.assertEqual(len(manifest["provisional_slots"]), 12)
         self.assertEqual(manifest["inventory"]["substantive_bugs"], 6)
         self.assertFalse(manifest["split_frozen"])
+
+    def test_keyword_compatible_local_refactors_by_static_ast_and_binding(self):
+        # Parse inert source as AST only: never exec/eval/import/compile fixtures.
+        def signature(source):
+            function, = ast.parse(source).body
+            self.assertIsInstance(function, ast.FunctionDef)
+            self.assertEqual(function.args.posonlyargs, [])
+            self.assertEqual(function.args.defaults, [])
+            self.assertEqual(function.args.kwonlyargs, [])
+            self.assertIsNone(function.args.vararg)
+            self.assertIsNone(function.args.kwarg)
+            return function, inspect.Signature([
+                inspect.Parameter(arg.arg, inspect.Parameter.POSITIONAL_OR_KEYWORD)
+                for arg in function.args.args])
+
+        for identifier in ["clean-rename", "adversary-malformed", "adversary-retries",
+                           "adversary-rejections", "adversary-coverage"]:
+            with self.subTest(identifier=identifier):
+                snapshot = offline.load(ROOT / identifier / "snapshot.json")
+                before, old = signature(snapshot["base_content"])
+                after, new = signature(snapshot["head_content"])
+                self.assertEqual(old, new)
+                self.assertEqual(list(new.parameters), ["x"])
+                self.assertEqual(old.bind(2).arguments, new.bind(2).arguments)
+                self.assertEqual(old.bind(x=2).arguments, new.bind(x=2).arguments)
+                assignment, returned = after.body
+                self.assertIsInstance(assignment, ast.Assign)
+                self.assertEqual(ast.dump(assignment.targets[0]), "Name(id='value', ctx=Store())")
+                self.assertEqual(ast.dump(assignment.value), "Name(id='x', ctx=Load())")
+                # Substituting the unchanged local binding restores the original
+                # return expression; structural evidence, not executed behavior.
+                class RestoreLocal(ast.NodeTransformer):
+                    def visit_Name(self, node):
+                        return ast.Name(id="x", ctx=node.ctx) if node.id == "value" else node
+                self.assertEqual(ast.dump(RestoreLocal().visit(returned)), ast.dump(before.body[0]))
+        # The old parameter-rename defect must be detected, not silently scoped out.
+        _, broken = signature("def double(value):\n    return value * 2\n")
+        with self.assertRaises(TypeError):
+            broken.bind(x=2)
+
+    def test_seed_severity_matches_high_rubric_and_scripted_response(self):
+        manifest = offline.verify(ROOT)
+        seeds = [case for case in manifest["cases"] if case["category"] == "seeded"]
+        self.assertEqual(len(seeds), 6)
+        for case in seeds:
+            labels = offline.load(ROOT / case["artifacts"]["labels"]["path"])
+            fixture = offline.load(ROOT / case["artifacts"]["replay"]["path"])
+            bug, = labels["bugs"]
+            self.assertEqual(bug["severity"], "HIGH")
+            finding, = runtime.parse_response(fixture["attempts"][0]["response"])["findings"]
+            self.assertEqual(finding["severity"], bug["severity"])
+            self.assertEqual((finding["file"], finding["line"]), (bug["file"], bug["line"]))
 
     def test_manifest_and_schema_hash_tampering(self):
         (self.root / "manifest.json").write_text("{}")

@@ -7,7 +7,7 @@
       "impact": "Undercounts repeated values",
       "line": 2,
       "root_cause": "Deduplicates multiplicities before aggregation",
-      "severity": "MEDIUM",
+      "severity": "HIGH",
       "trigger": "values=[3,3]; contract returns 6"
     }
   ],

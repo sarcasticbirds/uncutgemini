@@ -31,9 +31,9 @@
   "files": [
     {
       "additions": 2,
-      "deletions": 2,
+      "deletions": 1,
       "filename": "fixture.py",
-      "patch": "@@ -1,2 +1,2 @@\n-def identity(x):\n-    return x\n+def identity(value):"
+      "patch": "@@ -1,2 +1,3 @@\n def identity(x):\n-    return x\n+    value = x"
     }
   ],
   "schema_version": 1

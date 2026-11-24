@@ -1,2 +1,2 @@
-Authored contract: Missing patch tail prevents a model call and clean outcome
+Authored contract: Missing patch tail prevents a model call and clean outcome Identity preserves the supplied object for positional and x= keyword calls; parameter x is unchanged.
 Fixture is inert synthetic overlay data, not code present at source Git revisions.

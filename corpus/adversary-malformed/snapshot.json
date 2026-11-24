@@ -1,5 +1,5 @@
 {
   "base_content": "def identity(x):\n    return x\n",
   "file": "fixture.py",
-  "head_content": "def identity(value):\n    return value\n"
+  "head_content": "def identity(x):\n    value = x\n    return value\n"
 }

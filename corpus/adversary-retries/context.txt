@@ -1,2 +1,2 @@
-Authored contract: Each explicitly recorded attempt remains in denominators and costs
+Authored contract: Each explicitly recorded attempt remains in denominators and costs Identity preserves the supplied object for positional and x= keyword calls; parameter x is unchanged.
 Fixture is inert synthetic overlay data, not code present at source Git revisions.

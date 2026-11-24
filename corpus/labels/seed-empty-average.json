@@ -7,7 +7,7 @@
       "impact": "ZeroDivisionError for supported input",
       "line": 2,
       "root_cause": "Removed empty-input guard",
-      "severity": "MEDIUM",
+      "severity": "HIGH",
       "trigger": "values=[]; contract returns 0"
     }
   ],

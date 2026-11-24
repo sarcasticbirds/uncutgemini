@@ -2,7 +2,7 @@
 
 > **Candidate limitation:** automated review publication is disabled. Analysis, step summaries and proposed payload artifacts remain available. Re-enabling posting requires durable cross-job coordination and independent validation; there is no environment opt-in.
 
-AI code review + dependency scanning in one GitHub Action. One `uses:` line gets you Gemini inline review comments with suggestion fixes and Trivy vulnerability scanning.
+AI code review analysis + dependency scanning in one GitHub Action. This candidate retains proposed Gemini inline comments and suggestion fixes as evidence only; it does not deliver them to PRs.
 
 Zero runtime dependencies beyond Python stdlib and `gh` CLI. Two auditable Python files (`review.py` and `runtime.py`). No SDK, no Docker, no npm.
 
@@ -28,7 +28,7 @@ jobs:
           google-api-key: ${{ secrets.GOOGLE_API_KEY }}
 ```
 
-That's it. Every PR gets a single unified review comment covering:
+These examples configure analysis, not PR delivery. See the proposed payload contents below; publication remains disabled in this candidate.
 
 ## Manual Trigger
 
@@ -65,11 +65,11 @@ Trigger from the GitHub UI (Actions → Code Review → Run workflow) or the CLI
 gh workflow run review.yml -f pr-number=109
 ```
 
-Every PR gets a single unified review comment covering:
+Analysis artifacts contain a proposed unified payload covering (not posting):
 - **Trivy** dependency scan — vulnerability table, blocks merge on CRITICAL
 - **PR size** warning when changes exceed threshold
 - **Dependency diff** summary when lockfiles change
-- **Gemini** code review — inline comments on specific lines with one-click `suggestion` fixes
+- **Gemini** code review — proposed inline comments on specific lines with `suggestion` fixes; no live comments or one-click apply are delivered
 
 ## How It Works
 
@@ -119,7 +119,7 @@ Create `.github/review-guidelines.md` in your repo with project-specific convent
     extra-instructions: 'Focus on SQL injection. Ignore test files.'
 ```
 
-**Full control** — replace the entire prompt (must include `{diff}` and `{schema}`):
+**Full control** — replace the entire prompt. The original template must contain literal `{diff}`; `{schema}` and `{guidelines}` are optional. Inserted values are opaque and cannot supply a missing original `{diff}`. If omitting `{schema}`, request the same structured response contract yourself:
 
 ```yaml
 - uses: sarcasticbird/uncutgemini@v1
@@ -131,9 +131,9 @@ Create `.github/review-guidelines.md` in your repo with project-specific convent
       <diff>{diff}</diff>
 ```
 
-## Unified Review Comment
+## Proposed Unified Review Payload (not delivered)
 
-All checks roll up into a single PR review comment:
+All checks roll up into a proposed PR review payload retained as evidence, not a published comment:
 
 ```
 ## Uncut Gemini
@@ -153,20 +153,22 @@ Changes look solid but there are two security concerns.
 See inline comments below for details.
 ```
 
-Gemini findings appear as inline comments on the specific lines they reference, with `suggestion` blocks for one-click apply.
+The proposed payload targets specific changed lines and contains `suggestion` blocks. Publication is disabled: no inline comments or one-click apply are delivered.
 
 ## Review Behavior
 
-- **Unified comment** — Trivy vulns, PR size, dependency changes, and code review all in one place
-- **Inline suggestions** — code findings appear on specific lines with one-click apply
+- **Unified proposed payload** — Trivy vulns, PR size, dependency changes, and code review in retained evidence, not a delivered comment
+- **Proposed inline suggestions** — changed-line targets and replacement text are inspectable; not delivered or available for one-click apply
 - **Conservative scope** — every invocation reviews the full PR, including intentional same-SHA retries. Incremental optimization is disabled rather than trusting uncertain ancestry or compare-API coverage
 - **Advisory only** — all outcomes use `COMMENT`, never approval or change requests
 - **Explicit outcomes** — `complete-clean`, `complete-findings`, `partial`, `failed`, and `excluded/skipped`. Missing/binary/truncated patches prevent a complete result; excluded-only changes are not clean code reviews
 - **Safe suggestions** — only raw, single-line replacements on an added line, at most 4 KiB. Fenced, multiline, cross-hunk and invalid spans are rejected, not narrowed. Multiline comments without replacements are supported on contiguous added lines
-- **Inspectable provenance** — head/base, requested and provider-reported model identity, prompt/config/tool hashes, file coverage, rejection/duplicate/filter counts are recorded in the review and runtime evidence. Only complete, successfully published reviews can be discovered as success checkpoints
+- **Inspectable provenance** — head/base, requested and provider-reported model identity, prompt/config/tool hashes, file coverage, rejection/duplicate/filter counts are recorded in the proposed payload and runtime evidence. Prospective success markers are not published checkpoints; this candidate cannot publish one
 - **Bounded calls** — one model request per invocation; timeout/429/5xx are reported as failed rather than retried automatically
 
 Both workflows preserve input/result/payload/publication evidence as a seven-day Actions artifact. Treat these as repository source/review data: they contain paths and the reviewed diff, but not the model key. Review-body/comment size limits stop publication instead of risking a truncated success claim.
+
+The runtime log and Actions summary explicitly say **analysis only / publication disabled / not delivered**. `delivery.json` separately records the analysis outcome, disabled publication and proposed payload hash; `payload.json` preserves the exact proposal/provenance. The publication gate still exits nonzero. Workflows use `continue-on-error: true`: a green advisory job is neither delivery nor proof of complete-clean analysis. Hosted artifact retention/retrieval is configured, not qualified by offline tests.
 
 **Publication is fail-closed in this candidate**, including standalone use and direct calls to the runtime GitHub boundary. GitHub-hosted runners provide no provisioned durable cross-job claim/reconciliation mechanism. Local journals, new run directories, environment flags and remote review-list reads cannot prove that another POST is not still in flight. There is no opt-in bypass or automatic recovery path. `publication.json` records `blocked`, a stable repo/PR/head/base publication identity and payload hash; exclusive local creation protects evidence, not distributed delivery. Existing journals are preserved, regardless of state. Known-success, pending and unknown attempts do not authorize a new write. This deliberately removes unattended publication rather than claiming exactly-once delivery.
 

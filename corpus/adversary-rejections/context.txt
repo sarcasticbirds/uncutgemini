@@ -1,2 +1,2 @@
-Authored contract: Invalid locations are partial, duplicates stay counted, NIT filtering is explicit
+Authored contract: Invalid locations are partial, duplicates stay counted, NIT filtering is explicit Identity preserves the supplied object for positional and x= keyword calls; parameter x is unchanged.
 Fixture is inert synthetic overlay data, not code present at source Git revisions.

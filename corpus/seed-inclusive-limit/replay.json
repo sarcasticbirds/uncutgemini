@@ -13,7 +13,7 @@
             "content": {
               "parts": [
                 {
-                  "text": "{\"verdict\": \"findings\", \"summary\": \"Scripted fixture response; not model judgment.\", \"findings\": [{\"file\": \"fixture.py\", \"line\": 2, \"severity\": \"MEDIUM\", \"description\": \"Exclusive comparison at inclusive boundary: Rejects supported boundary-sized request\", \"suggested_fix\": null}]}"
+                  "text": "{\"verdict\": \"findings\", \"summary\": \"Scripted fixture response; not model judgment.\", \"findings\": [{\"file\": \"fixture.py\", \"line\": 2, \"severity\": \"HIGH\", \"description\": \"Exclusive comparison at inclusive boundary: Rejects supported boundary-sized request\", \"suggested_fix\": null}]}"
                 }
               ]
             },

@@ -1,0 +1,20 @@
+71c51d8ceabddb7e04dc7f5707a19556f40d7acc
+1c0a726ebf0f65d32ccf4281bc4b869c7789604d
+fix: address roborev findings, add tests and PR hygiene checks
+
+RoboRev findings:
+- Validate start_line against diff ranges (prevents 422 on entire review)
+- Handle unexpected Gemini response structure (thinking parts, missing keys)
+
+New features:
+- PR size warning when changes exceed threshold (default 500 lines)
+- Dependency diff summary when lockfiles change
+- Unified review comment combining all checks in one body
+
+Housekeeping:
+- Refactor review.py with main() guard for testable imports
+- Add test_review.py with 19 tests covering core functions
+- Add .flox environment, .gitignore
+- Update README with unified comment docs and size-warning input
+- Update examples to match current action.yml
+

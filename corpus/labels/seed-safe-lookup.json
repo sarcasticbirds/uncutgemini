@@ -7,7 +7,7 @@
       "impact": "KeyError instead of supported missing result",
       "line": 2,
       "root_cause": "Removed missing-key fallback",
-      "severity": "MEDIUM",
+      "severity": "HIGH",
       "trigger": "mapping={}, key='absent'; contract returns None"
     }
   ],

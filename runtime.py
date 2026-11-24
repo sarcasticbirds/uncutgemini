@@ -301,6 +301,8 @@ def publish(api, payload, record, journal):
 
 
 def run():
+    notice = "Analysis only — publication disabled — not delivered"
+    print(notice)
     env = dict(os.environ)
     env["PR_NUMBER"] = env.get("PR_NUMBER") or env["UG_PR_NUMBER"]
     directory = Path(tempfile.mkdtemp(prefix="uncutgemini-", dir=env.get("RUNNER_TEMP")))
@@ -321,9 +323,16 @@ def run():
     payload, record = analyze(diff, record, env, fragments=review.read_fragments(), input_sink=save_input)
     (directory / "result.json").write_text(json.dumps(record, indent=2))
     (directory / "payload.json").write_text(json.dumps(payload, indent=2))
+    (directory / "delivery.json").write_text(json.dumps({
+        "analysis_status": record["status"], "publication_status": "disabled",
+        "delivered": False, "success_checkpoint": False,
+        "proposed_payload_sha256": digest(payload)}, indent=2))
     if env.get("GITHUB_STEP_SUMMARY"):
         with open(env["GITHUB_STEP_SUMMARY"], "a") as summary:
-            summary.write(payload["body"])
+            summary.write(f"## {notice}\n\n"
+                          "Proposed payload follows, not a published review. Any success marker below is prospective only, "
+                          "not a delivered checkpoint. A green advisory job proves neither delivery nor complete-clean analysis.\n\n"
+                          + payload["body"])
     publish(gh, payload, record, directory / "publication.json")
 
 

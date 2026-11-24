@@ -12,7 +12,7 @@
         },
         "labels": {
           "path": "labels/seed-empty-average.json",
-          "sha256": "942f5164468abb3e0de9e337c8f20c7ba2c671ba7cdf39a0dacf1be2816d111d"
+          "sha256": "9aff291264350efbc4494ed5743fde730c49725ebc50bf30072a2282c207c2c4"
         },
         "reference": {
           "path": "seed-empty-average/reference.txt",
@@ -20,7 +20,7 @@
         },
         "replay": {
           "path": "seed-empty-average/replay.json",
-          "sha256": "7ec18f8d52fc245574879918b1c1169a553948fb75c286d704612f2dbcecd5cd"
+          "sha256": "af6fe6b64df807d787dead777df860ec7e6751b81ba0c82db231dbd489f84943"
         },
         "snapshot": {
           "path": "seed-empty-average/snapshot.json",
@@ -176,7 +176,7 @@
         },
         "labels": {
           "path": "labels/seed-inclusive-limit.json",
-          "sha256": "455aa11a5220c996244ba92806e9769a71f82bf7de8594e584bccef5f2e5c72f"
+          "sha256": "40e426af6bb17a0496bfe9e765a94fef8498e9a9d93b91d2bd565e715f1895eb"
         },
         "reference": {
           "path": "seed-inclusive-limit/reference.txt",
@@ -184,7 +184,7 @@
         },
         "replay": {
           "path": "seed-inclusive-limit/replay.json",
-          "sha256": "29f666d0942e58771aeb1c8a65de950776bb4728106b576aad41bd84e9d509ab"
+          "sha256": "cae550cd02333e0329834f3eccb92e4da3246f8498e7877f834adbb8b6bfee53"
         },
         "snapshot": {
           "path": "seed-inclusive-limit/snapshot.json",
@@ -258,7 +258,7 @@
         },
         "labels": {
           "path": "labels/seed-private-copy.json",
-          "sha256": "8d63ab6dae20de0ae4a43e4e78b25e0d55a3043d4d0314aea83052778359b3d4"
+          "sha256": "7cf22402f4166353650ff5e31917afce755a19f021777c3736d76a955c53e765"
         },
         "reference": {
           "path": "seed-private-copy/reference.txt",
@@ -266,7 +266,7 @@
         },
         "replay": {
           "path": "seed-private-copy/replay.json",
-          "sha256": "fab5d004017fc5410ea80b17cbe17b12cc344b6ed88e95f905db52c175e9f721"
+          "sha256": "3a2f1159d56acec1d8063bfa14ad77766aa8b009b2e69b615eb342ff5291cb74"
         },
         "snapshot": {
           "path": "seed-private-copy/snapshot.json",
@@ -340,7 +340,7 @@
         },
         "labels": {
           "path": "labels/seed-integer-total.json",
-          "sha256": "45afcea9aa90b39800e77dd8e6554387f35b70d667d7a0d2d720325730f73997"
+          "sha256": "d90827fccc7641cc079a54da11d00bb788d93a06d75a71fbec871ffa1e26e9da"
         },
         "reference": {
           "path": "seed-integer-total/reference.txt",
@@ -348,7 +348,7 @@
         },
         "replay": {
           "path": "seed-integer-total/replay.json",
-          "sha256": "288c4042a4ac06273cd09e0d1b6ac37eeda4d5d3f99e49d91ff4abf97bd253c4"
+          "sha256": "e599500901acf86edb5c84ea897057cbeb798e33542d11280984a5d8505e214f"
         },
         "snapshot": {
           "path": "seed-integer-total/snapshot.json",
@@ -422,7 +422,7 @@
         },
         "labels": {
           "path": "labels/seed-safe-lookup.json",
-          "sha256": "4fa3febbdbb59614fdca29efaa5e346eb6e89dd03b3dff1325fcfdcfecd5b39a"
+          "sha256": "09ec730f46278978fd663c4bff2c060ea9af140dda61059a8531bdec754188c9"
         },
         "reference": {
           "path": "seed-safe-lookup/reference.txt",
@@ -430,7 +430,7 @@
         },
         "replay": {
           "path": "seed-safe-lookup/replay.json",
-          "sha256": "017ca27db7ea898d4d4e7928bafe226714768c6d8fc051ec6b62378653333e7e"
+          "sha256": "4f3e27acc0610bd9aa0b0a66d9a04be152c0e4fe21eaa01cb38d0de57f1eaec0"
         },
         "snapshot": {
           "path": "seed-safe-lookup/snapshot.json",
@@ -496,11 +496,11 @@
       "artifacts": {
         "context": {
           "path": "clean-rename/context.txt",
-          "sha256": "16f68e90addc2285b2f484edeb542289a6071c9e3264fc274b2dcc7ccf00fc21"
+          "sha256": "6bcc1cc968a81ba16e5a65f60f56399ece771131974873d90fe4836967d99a07"
         },
         "diff": {
           "path": "clean-rename/change.diff",
-          "sha256": "3cd8ed125cc453b77c83a6c31470dec465cf33ec346ff7f508a43d8d3f71f96e"
+          "sha256": "572eb87cd828c045dcd6d24a497c9468cb2080ced44c09652609d86dfa5f1a42"
         },
         "labels": {
           "path": "labels/clean-rename.json",
@@ -508,15 +508,15 @@
         },
         "reference": {
           "path": "clean-rename/reference.txt",
-          "sha256": "ee5ede30d5bc1df9b7f300dc03ac748a72f5773673828340233e20914dead43d"
+          "sha256": "86855d173acc7bb12239968f87266233721aa54589f313380f4b9899ccb2a915"
         },
         "replay": {
           "path": "clean-rename/replay.json",
-          "sha256": "c0fd982f3828acb4fdbb0e838c7d8a994628c8161b2690311bbf83ff746f2fb4"
+          "sha256": "209f6a5ec4429f890c570f376b092682cedd994455e92d9a146dbb92f4944fcd"
         },
         "snapshot": {
           "path": "clean-rename/snapshot.json",
-          "sha256": "7f21b1224d526f4003ad925bd87ffdc5b3c50f9bd5c5e1df5f946e872bbfedb8"
+          "sha256": "47f27a092cd3596a5f5ddc3bf08d7655cd942d6342f5422a7941e246139aee2a"
         }
       },
       "base_sha": "566bc0a65693ba7fc8262ba9003103a42a465452",
@@ -578,11 +578,11 @@
       "artifacts": {
         "context": {
           "path": "adversary-malformed/context.txt",
-          "sha256": "801c4e3bf41693b186af439edbe7acd8d078db0c73e4546ae08e93c38ec18b85"
+          "sha256": "4dfa2e5df96b2520dccb41c1ee1ea3a1df0272badecf50878bbb67e0c11f55c8"
         },
         "diff": {
           "path": "adversary-malformed/change.diff",
-          "sha256": "7d76d4d9515740cda7dd6f7a908a2271b412a430b5e14efeae5a8f8cc0a11d1b"
+          "sha256": "478c34c13743c18303c07db9465632a39bf7814205b2ed0da22d7f0ba51dfcb1"
         },
         "labels": {
           "path": "labels/adversary-malformed.json",
@@ -590,15 +590,15 @@
         },
         "reference": {
           "path": "adversary-malformed/reference.txt",
-          "sha256": "9910e2fc297f8665cc0c7a6a0dcf2522dbe3ad118bdab9b9cb20a4df678557ac"
+          "sha256": "6d795fe3180bc5ef0f887f0476a0de13d36a1d9b9503e6f403f7c93abe4d8c52"
         },
         "replay": {
           "path": "adversary-malformed/replay.json",
-          "sha256": "50f75f7034739eaaae11401d8e7f1d0a7ebc7ad350f5cd63c3675ab5a7abc818"
+          "sha256": "977190a652877ff76bdcf6b9f456c04f8a66a9e2148fa351bbeb5235c4337c09"
         },
         "snapshot": {
           "path": "adversary-malformed/snapshot.json",
-          "sha256": "6320804bb8486e01d3d1196763db533c1869b6f8099a99515b9cd796444f5d7d"
+          "sha256": "fdcd2e26ebd6f71d6b669e0462dc26780e3d5c73f6b5b5a085d95775b6cadc48"
         }
       },
       "base_sha": "566bc0a65693ba7fc8262ba9003103a42a465452",
@@ -619,11 +619,11 @@
       "artifacts": {
         "context": {
           "path": "adversary-retries/context.txt",
-          "sha256": "79bccb10680711384699898768a78ddc409571ca2362e949d8084294b15228bd"
+          "sha256": "b3e83d7856bf04462d0524d70a9496abf864f3aef457a6229450c4571ac281fd"
         },
         "diff": {
           "path": "adversary-retries/change.diff",
-          "sha256": "7d76d4d9515740cda7dd6f7a908a2271b412a430b5e14efeae5a8f8cc0a11d1b"
+          "sha256": "478c34c13743c18303c07db9465632a39bf7814205b2ed0da22d7f0ba51dfcb1"
         },
         "labels": {
           "path": "labels/adversary-retries.json",
@@ -631,15 +631,15 @@
         },
         "reference": {
           "path": "adversary-retries/reference.txt",
-          "sha256": "9910e2fc297f8665cc0c7a6a0dcf2522dbe3ad118bdab9b9cb20a4df678557ac"
+          "sha256": "6d795fe3180bc5ef0f887f0476a0de13d36a1d9b9503e6f403f7c93abe4d8c52"
         },
         "replay": {
           "path": "adversary-retries/replay.json",
-          "sha256": "ac7d943a63205f451805ccaef6878ebd3fcbaef9c67ddd62508ab8e82176910e"
+          "sha256": "adede497403ecfa35c4910e849153aa1a19dc6650913d718cd8cfa80160882f1"
         },
         "snapshot": {
           "path": "adversary-retries/snapshot.json",
-          "sha256": "6320804bb8486e01d3d1196763db533c1869b6f8099a99515b9cd796444f5d7d"
+          "sha256": "fdcd2e26ebd6f71d6b669e0462dc26780e3d5c73f6b5b5a085d95775b6cadc48"
         }
       },
       "base_sha": "566bc0a65693ba7fc8262ba9003103a42a465452",
@@ -660,11 +660,11 @@
       "artifacts": {
         "context": {
           "path": "adversary-rejections/context.txt",
-          "sha256": "97b3e66bc98ca0d9b84467accdbca96056dd64668dc165f32d8009e56839b30c"
+          "sha256": "4f5358be0a9ceabf6311de9d02c7b7202ec9e209f80c3843d5333d07b2757a5e"
         },
         "diff": {
           "path": "adversary-rejections/change.diff",
-          "sha256": "7d76d4d9515740cda7dd6f7a908a2271b412a430b5e14efeae5a8f8cc0a11d1b"
+          "sha256": "478c34c13743c18303c07db9465632a39bf7814205b2ed0da22d7f0ba51dfcb1"
         },
         "labels": {
           "path": "labels/adversary-rejections.json",
@@ -672,15 +672,15 @@
         },
         "reference": {
           "path": "adversary-rejections/reference.txt",
-          "sha256": "9910e2fc297f8665cc0c7a6a0dcf2522dbe3ad118bdab9b9cb20a4df678557ac"
+          "sha256": "6d795fe3180bc5ef0f887f0476a0de13d36a1d9b9503e6f403f7c93abe4d8c52"
         },
         "replay": {
           "path": "adversary-rejections/replay.json",
-          "sha256": "f10b14e278c625668d236a08340f5ddb3491972c48132ab4a7a8010388558008"
+          "sha256": "b741114cdd0a63e26a42ef1aa951e40322244fe667b7179c478317bf98eab696"
         },
         "snapshot": {
           "path": "adversary-rejections/snapshot.json",
-          "sha256": "6320804bb8486e01d3d1196763db533c1869b6f8099a99515b9cd796444f5d7d"
+          "sha256": "fdcd2e26ebd6f71d6b669e0462dc26780e3d5c73f6b5b5a085d95775b6cadc48"
         }
       },
       "base_sha": "566bc0a65693ba7fc8262ba9003103a42a465452",
@@ -701,11 +701,11 @@
       "artifacts": {
         "context": {
           "path": "adversary-coverage/context.txt",
-          "sha256": "00fc05e86863259c87d851a69733205a3cb4f7c23b98d73d06dff0e02f93b587"
+          "sha256": "655dc14480cd9d12e501f3afaec64975dcfbb9c449888e61d601f5d0d5e5ffc8"
         },
         "diff": {
           "path": "adversary-coverage/change.diff",
-          "sha256": "7d76d4d9515740cda7dd6f7a908a2271b412a430b5e14efeae5a8f8cc0a11d1b"
+          "sha256": "478c34c13743c18303c07db9465632a39bf7814205b2ed0da22d7f0ba51dfcb1"
         },
         "labels": {
           "path": "labels/adversary-coverage.json",
@@ -713,15 +713,15 @@
         },
         "reference": {
           "path": "adversary-coverage/reference.txt",
-          "sha256": "9910e2fc297f8665cc0c7a6a0dcf2522dbe3ad118bdab9b9cb20a4df678557ac"
+          "sha256": "6d795fe3180bc5ef0f887f0476a0de13d36a1d9b9503e6f403f7c93abe4d8c52"
         },
         "replay": {
           "path": "adversary-coverage/replay.json",
-          "sha256": "863f95c477bb5a772b4969d0006561c0aecefb03b9f0c72ea99bc2b8947dbb32"
+          "sha256": "8ff2137933204663eef3279493bc27adde10e421e94844612fa6c1502d70c338"
         },
         "snapshot": {
           "path": "adversary-coverage/snapshot.json",
-          "sha256": "6320804bb8486e01d3d1196763db533c1869b6f8099a99515b9cd796444f5d7d"
+          "sha256": "fdcd2e26ebd6f71d6b669e0462dc26780e3d5c73f6b5b5a085d95775b6cadc48"
         }
       },
       "base_sha": "566bc0a65693ba7fc8262ba9003103a42a465452",

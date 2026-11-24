@@ -2,7 +2,10 @@
 import copy
 from concurrent.futures import ThreadPoolExecutor
 import json
+import os
 from pathlib import Path
+import subprocess
+import sys
 import tempfile
 import unittest
 from unittest.mock import Mock, patch
@@ -434,6 +437,64 @@ class RuntimeTests(unittest.TestCase):
             self.assertEqual(runtime.digest(request["prompt"]), input_record["prompt_sha256"])
             self.assertEqual(input_record["head"], HEAD)
             self.assertNotIn("offline-fixture-not-a-secret", "".join(p.read_text() for p in dirs[0].iterdir()))
+            self.assert_unpublished_evidence(dirs[0], Path(directory) / "summary")
+
+    def assert_unpublished_evidence(self, directory, summary_path):
+        payload = json.loads((directory / "payload.json").read_text())
+        record = json.loads((directory / "result.json").read_text())
+        delivery = json.loads((directory / "delivery.json").read_text())
+        self.assertEqual(delivery, {"analysis_status": record["status"], "publication_status": "disabled",
+                                    "delivered": False, "success_checkpoint": False,
+                                    "proposed_payload_sha256": runtime.digest(payload)})
+        summary = summary_path.read_text()
+        self.assertTrue(summary.startswith("## Analysis only — publication disabled — not delivered\n"))
+        self.assertIn("not a delivered checkpoint", summary)
+        self.assertIn("green advisory job proves neither", summary)
+        self.assertTrue(summary.endswith(payload["body"]))
+        self.assertFalse(payload["body"].startswith("## Analysis only"))
+
+    def test_full_mocked_cli_summaries_do_not_claim_delivery(self):
+        # Run both real __main__ paths in fresh processes. Mock only external
+        # GitHub launcher / model HTTP boundaries; never perform remote writes.
+        script = '''
+import json, runpy, subprocess, sys, urllib.request
+from pathlib import Path
+from unittest.mock import Mock, patch
+from test_runtime import FakeGitHub, response
+api = FakeGitHub()
+def command(args, **kwargs):
+    if args[:2] != ["gh", "api"] or len(args) != 3:
+        raise AssertionError("Unexpected command or attempted write")
+    return subprocess.CompletedProcess(args, 0, json.dumps(api(args[2])), "")
+body = Mock()
+body.__enter__ = Mock(return_value=body)
+body.__exit__ = Mock(return_value=False)
+body.read.return_value = json.dumps(response()).encode()
+try:
+    with patch("subprocess.run", side_effect=command), patch("urllib.request.urlopen", return_value=body):
+        runpy.run_path(sys.argv[1], run_name="__main__")
+finally:
+    Path(sys.argv[2]).write_text(json.dumps({"posts": api.posts, "reads": api.calls}))
+'''
+        for entrypoint in ["runtime.py", "review.py"]:
+            with self.subTest(entrypoint=entrypoint), tempfile.TemporaryDirectory() as directory:
+                root = Path(__file__).parent.resolve()
+                env = {k: v for k, v in os.environ.items() if k in ["PATH", "SYSTEMROOT", "HOME"]}
+                env.update(ENV | {"RUNNER_TEMP": directory, "GITHUB_STEP_SUMMARY": directory + "/summary",
+                                  "GUIDELINES_FILE": directory + "/absent", "PYTHONPATH": str(root),
+                                  "GOOGLE_API_KEY": "offline-fixture-not-a-secret"})
+                result = subprocess.run([sys.executable, "-c", script, str(root / entrypoint), directory + "/calls.json"],
+                                        env=env, capture_output=True, text=True)
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertTrue(result.stdout.startswith("Analysis only — publication disabled — not delivered\n"))
+                self.assertIn("Publication disabled", result.stderr)
+                calls = json.loads((Path(directory) / "calls.json").read_text())
+                self.assertEqual(calls["posts"], [])
+                self.assertTrue(calls["reads"])
+                evidence, = Path(directory).glob("uncutgemini-*")
+                self.assert_unpublished_evidence(evidence, Path(directory) / "summary")
+                self.assertEqual(json.loads((evidence / "result.json").read_text())["status"], "complete-clean")
+                self.assertEqual(json.loads((evidence / "publication.json").read_text())["state"], "blocked")
 
     def test_publication_limits_never_write(self):
         for oversized in ["body", "comments"]:

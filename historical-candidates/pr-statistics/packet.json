@@ -1,0 +1,140 @@
+{
+  "accepted_manifest": false,
+  "access_basis": "Assigned authorized repository; managed bird-hawk git/gh read access verified",
+  "artifacts": [
+    {
+      "bytes": 11613,
+      "commit": "db4d0a86a150e278a5893fe1bf67c85a50f20e15",
+      "git_blob": "6e61de6434a61d0ad3552df4511a18767c94dc1c",
+      "path": "before/action.yml.txt",
+      "role": "before",
+      "sha256": "8946c4af0eeb3d2d3d61f650db3af6cc20eb00423d0d40432a074191301552f4",
+      "source_path": "action.yml",
+      "source_url": "https://github.com/sarcasticbirds/uncutgemini/blob/db4d0a86a150e278a5893fe1bf67c85a50f20e15/action.yml"
+    },
+    {
+      "bytes": 10791,
+      "commit": "db4d0a86a150e278a5893fe1bf67c85a50f20e15",
+      "git_blob": "1dcfdd9f177523b2a6cd5ac38979a7b71d702df3",
+      "path": "before/review.py.txt",
+      "role": "before",
+      "sha256": "04b2e332d4d80303a48af6f164a9ddeb1d0a48d95a49d059347d0dfe41770a8e",
+      "source_path": "review.py",
+      "source_url": "https://github.com/sarcasticbirds/uncutgemini/blob/db4d0a86a150e278a5893fe1bf67c85a50f20e15/review.py"
+    },
+    {
+      "bytes": 11541,
+      "commit": "1a59e878ea812907cd9c61e4e2366c6d1a4a9b72",
+      "git_blob": "b26e1cdf880aba67abf74055c1e28e3b8390fb63",
+      "path": "fixed/action.yml.txt",
+      "role": "fixed",
+      "sha256": "f4581ba3085a4433a825c9f3f6444b00f88608d5dbdb5514a65d554f8cb57393",
+      "source_path": "action.yml",
+      "source_url": "https://github.com/sarcasticbirds/uncutgemini/blob/1a59e878ea812907cd9c61e4e2366c6d1a4a9b72/action.yml"
+    },
+    {
+      "bytes": 10791,
+      "commit": "1a59e878ea812907cd9c61e4e2366c6d1a4a9b72",
+      "git_blob": "1dcfdd9f177523b2a6cd5ac38979a7b71d702df3",
+      "path": "fixed/review.py.txt",
+      "role": "fixed",
+      "sha256": "04b2e332d4d80303a48af6f164a9ddeb1d0a48d95a49d059347d0dfe41770a8e",
+      "source_path": "review.py",
+      "source_url": "https://github.com/sarcasticbirds/uncutgemini/blob/1a59e878ea812907cd9c61e4e2366c6d1a4a9b72/review.py"
+    },
+    {
+      "bytes": 10322,
+      "commit": "1c0a726ebf0f65d32ccf4281bc4b869c7789604d",
+      "git_blob": "0328be36dee514f22aff6dd4b800a9a225f37891",
+      "path": "introduction/action.yml.txt",
+      "role": "introduction",
+      "sha256": "82d61d0f1db277d2f75160324f839b3b1aaa1eca40fc35d89612497893e92bf8",
+      "source_path": "action.yml",
+      "source_url": "https://github.com/sarcasticbirds/uncutgemini/blob/1c0a726ebf0f65d32ccf4281bc4b869c7789604d/action.yml"
+    },
+    {
+      "bytes": 1070,
+      "commit": "db4d0a86a150e278a5893fe1bf67c85a50f20e15",
+      "git_blob": "4c8996d0d139d7c9e1d81c47e3fe7264df3aa5db",
+      "path": "before/LICENSE.txt",
+      "role": "before",
+      "sha256": "279d8cb652b46c1fe362c8cf691a7383b62b797592c9ef48f33596b17f5557b8",
+      "source_path": "LICENSE",
+      "source_url": "https://github.com/sarcasticbirds/uncutgemini/blob/db4d0a86a150e278a5893fe1bf67c85a50f20e15/LICENSE"
+    },
+    {
+      "bytes": 1070,
+      "commit": "1a59e878ea812907cd9c61e4e2366c6d1a4a9b72",
+      "git_blob": "4c8996d0d139d7c9e1d81c47e3fe7264df3aa5db",
+      "path": "fixed/LICENSE.txt",
+      "role": "fixed",
+      "sha256": "279d8cb652b46c1fe362c8cf691a7383b62b797592c9ef48f33596b17f5557b8",
+      "source_path": "LICENSE",
+      "source_url": "https://github.com/sarcasticbirds/uncutgemini/blob/1a59e878ea812907cd9c61e4e2366c6d1a4a9b72/LICENSE"
+    },
+    {
+      "bytes": 1070,
+      "commit": "1c0a726ebf0f65d32ccf4281bc4b869c7789604d",
+      "git_blob": "4c8996d0d139d7c9e1d81c47e3fe7264df3aa5db",
+      "path": "introduction/LICENSE.txt",
+      "role": "introduction",
+      "sha256": "279d8cb652b46c1fe362c8cf691a7383b62b797592c9ef48f33596b17f5557b8",
+      "source_path": "LICENSE",
+      "source_url": "https://github.com/sarcasticbirds/uncutgemini/blob/1c0a726ebf0f65d32ccf4281bc4b869c7789604d/LICENSE"
+    },
+    {
+      "bytes": 1062,
+      "kind": "actual-forward-fix-diff",
+      "path": "fix.diff",
+      "sha256": "1235a3fe75dcf89b335a6e315fd6080fbd8b3ded33adc04f243f9b2a22877fb3",
+      "source_url": "https://github.com/sarcasticbirds/uncutgemini/commit/1a59e878ea812907cd9c61e4e2366c6d1a4a9b72"
+    },
+    {
+      "bytes": 10770,
+      "kind": "actual-root-addition-not-reversed-fix",
+      "path": "introduction.diff",
+      "sha256": "30d4e0817939e6c810e5a3691c185cfe82318eac443d38b6e36027a0ba35da2b",
+      "source_url": "https://github.com/sarcasticbirds/uncutgemini/commit/1c0a726ebf0f65d32ccf4281bc4b869c7789604d"
+    },
+    {
+      "bytes": 237,
+      "kind": "git-commit-id-parents-message",
+      "path": "before/commit.txt",
+      "sha256": "295d1c166478d1ce74e13597885e999a0e326a33b91291e7e16a5baa8b723c6c",
+      "source_url": "https://github.com/sarcasticbirds/uncutgemini/commit/db4d0a86a150e278a5893fe1bf67c85a50f20e15"
+    },
+    {
+      "bytes": 343,
+      "kind": "git-commit-id-parents-message",
+      "path": "fixed/commit.txt",
+      "sha256": "6ea0375cbc1b13257f1cf476e9bd09400580a85ac22a3d80176cc6c2c0f60c35",
+      "source_url": "https://github.com/sarcasticbirds/uncutgemini/commit/1a59e878ea812907cd9c61e4e2366c6d1a4a9b72"
+    },
+    {
+      "bytes": 707,
+      "kind": "git-commit-id-parents-message",
+      "path": "introduction/commit.txt",
+      "sha256": "6120f3529a63914a344da51d0b83d382ed7dfb69697253557a4604c0b977724b",
+      "source_url": "https://github.com/sarcasticbirds/uncutgemini/commit/1c0a726ebf0f65d32ccf4281bc4b869c7789604d"
+    }
+  ],
+  "before_sha": "db4d0a86a150e278a5893fe1bf67c85a50f20e15",
+  "candidate": "pr-statistics",
+  "execution": "No historical source imported, compiled, executed or workflows run; source/diff inspection and authored static reasoning only",
+  "fix_sha": "1a59e878ea812907cd9c61e4e2366c6d1a4a9b72",
+  "fresh_holdout": false,
+  "independent_adjudication": false,
+  "introduction_parents": [],
+  "introduction_scope": "First observed addition in this repository root; no earlier good parent or upstream lineage established",
+  "introduction_sha": "1c0a726ebf0f65d32ccf4281bc4b869c7789604d",
+  "license_basis": "MIT license copied verbatim at introduction, before and fixed revisions",
+  "redaction_basis": "Repository source only; exact bytes retained, no private sources/credentials requested or added. Source inspection found symbolic environment references, not credential values; no independent redaction certification",
+  "remaining_evidence": [
+    "Independent source/contract/root-cause adjudication and redaction audit",
+    "Observed failing input/response or historical run log and pinned external API/CLI contract",
+    "No pre-introduction good parent exists in this repository; upstream lineage unknown"
+  ],
+  "schema_version": 1,
+  "source_repository": "https://github.com/sarcasticbirds/uncutgemini",
+  "status": "development-visible-candidate-not-adjudicated"
+}

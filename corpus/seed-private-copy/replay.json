@@ -13,7 +13,7 @@
             "content": {
               "parts": [
                 {
-                  "text": "{\"verdict\": \"findings\", \"summary\": \"Scripted fixture response; not model judgment.\", \"findings\": [{\"file\": \"fixture.py\", \"line\": 2, \"severity\": \"MEDIUM\", \"description\": \"Mutates caller-owned input: Corrupts shared list state observed by later callers\", \"suggested_fix\": null}]}"
+                  "text": "{\"verdict\": \"findings\", \"summary\": \"Scripted fixture response; not model judgment.\", \"findings\": [{\"file\": \"fixture.py\", \"line\": 2, \"severity\": \"HIGH\", \"description\": \"Mutates caller-owned input: Corrupts shared list state observed by later callers\", \"suggested_fix\": null}]}"
                 }
               ]
             },

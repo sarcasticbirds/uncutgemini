@@ -1,8 +1,9 @@
 # Credential-free protocol corpus — provisional v1
 
 This is **not a completed evaluation corpus or model-quality result**. Hawk
-authored the fixtures and labels; Robin/Wren have not independently adjudicated
-them. No provider inference, credentials, live posting or fixture-code execution
+authored the fixtures and labels. Robin/Wren reviewed the prior revision with
+contract/severity dissent; the corrections below await material-change review.
+No independent sealing/grading is claimed. No provider inference, credentials, live posting or fixture-code execution
 is required. All scripts use the Python 3.12 standard library.
 
 ## Reproduce
@@ -47,7 +48,7 @@ guest test, not a Flox check. Consumer replay needs neither uv nor network.
 
 There are **6** provisional substantive bug labels, versus at least **30**
 required. Scripted diagnostics in adversarial cases are *not* substantive bugs.
-Clean cases have rationales but are not independently reviewed clean cases.
+Clean cases have rationales; prior narrow adjudications are preserved in the review records, not extended to these replacement bytes automatically.
 
 Missing source: twelve curated, authorized historical packets with contextual
 trigger/root cause/impact, actual bug/fix snapshots, fix evidence and auditable
@@ -56,6 +57,29 @@ main merge and runtime handoff commits. Those commits alone are not evidence of
 twelve historical cases. No external/private repositories were searched and no
 historical access or labels were invented. Twenty-four more substantive bugs
 are required; filling the twelve slots alone does not guarantee that floor.
+
+Two development-visible [historical candidate packets](../historical-candidates/README.md)
+now preserve actual source/fix/introduction bytes, caller paths, hashes, access/license
+basis and explicit missing evidence. They are outside the accepted manifest and
+scoring; they do not fill slots or increase bug counts. Historical source is inert
+and has not been executed, imported or compiled.
+
+## Bounded authored correction
+
+The input at `46d55b90d7cec965bedb7fe4888d5a35f3d587e6` changed ordinary
+`double(x)` to `double(value)` and similarly renamed identity parameters in four
+protocol overlays. That broke `x=` binding; the old clean claim is not universally
+valid. The replacement keeps parameter `x`, adds local `value = x`, and uses
+that local in the return. Positional and keyword contracts are explicit; static
+AST/signature-binding regressions check both without running fixture source.
+Protocol families, grouping and scripted diagnostic intent are unchanged.
+
+The five non-auth seeded severities change from MEDIUM to HIGH for supported
+wrong-result/crash/data-integrity impacts under the existing runtime rubric;
+token-auth stays HIGH. Six substantive seeded bugs remain six. Production rubric,
+model defaults and independent review records are unchanged. Exact old/new hashes
+are delivered with the correction task evidence; hashes prove bytes, not grading
+independence. The old answer-exposed split remains unsealed/unfrozen, not fresh.
 
 Every populated case is explicitly a **synthetic overlay**, not a historical
 Git snapshot. Full source base/head SHAs identify the authorized repository

@@ -1,1 +1,1 @@
-Rename preserves all uses
+Local binding value = x preserves parameter x and positional/keyword integer contracts; authored replacement, not historical evidence

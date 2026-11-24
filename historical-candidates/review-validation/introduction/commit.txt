@@ -1,0 +1,16 @@
+1c0a726ebf0f65d32ccf4281bc4b869c7789604d
+
+feat: initial uncutgemini action — AI code review + dependency scanning
+
+Composite GitHub Action that bundles Gemini code review and Trivy
+vulnerability scanning into a single `uses:` line. Zero dependencies
+beyond Python stdlib and gh CLI.
+
+- Inline PR review comments with suggestion blocks for one-click fixes
+- Incremental reviews on subsequent pushes (only reviews new changes)
+- Trivy dependency scan with configurable blocking threshold
+- PR size warnings and lockfile change summaries
+- Unified review comment combining all checks in one place
+- Custom prompt support (extra-instructions or full replacement)
+- Line number validation against diff ranges
+
