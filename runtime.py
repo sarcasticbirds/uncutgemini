@@ -33,11 +33,10 @@ def tool_identity():
 
 
 def gh(endpoint, payload=None):
-    args = ["gh", "api", endpoint]
     if payload is not None:
-        args += ["--method", "POST", "--input", "-"]
-    result = subprocess.run(args, input=None if payload is None else json.dumps(payload),
-                            capture_output=True, text=True, timeout=120)
+        raise RuntimeError("GitHub writes disabled: no durable cross-job publication coordinator")
+    args = ["gh", "api", endpoint]
+    result = subprocess.run(args, capture_output=True, text=True, timeout=120)
     if result.returncode:
         # Do not echo server bodies or commands containing user-provided data.
         raise RuntimeError("GitHub request failed; do not replay an uncertain write")
@@ -216,7 +215,9 @@ def analyze(diff, record, env, model_call=request_model, fragments=(), input_sin
     custom = env.get("CUSTOM_PROMPT", "").strip()
     guidelines = env.get("REVIEW_GUIDELINES", "")
     extra = env.get("EXTRA_INSTRUCTIONS", "")
-    prompt = (custom.replace("{diff}", diff).replace("{guidelines}", guidelines).replace("{schema}", review.SCHEMA_INSTRUCTIONS)
+    # Only scan the original template. Inserted source and instructions are opaque.
+    values = {"diff": diff, "guidelines": guidelines, "schema": review.SCHEMA_INSTRUCTIONS}
+    prompt = (re.sub(r"\{(diff|guidelines|schema)\}", lambda match: values[match[1]], custom)
               if custom else review.build_prompt(diff, guidelines, extra))
     config = review.build_generation_config(model, len(diff.splitlines()))
     record.update({"model": model, "prompt_sha256": digest(prompt), "generation_config": config,
@@ -229,11 +230,16 @@ def analyze(diff, record, env, model_call=request_model, fragments=(), input_sin
     try:
         if severity not in review.SEVERITY_RANK:
             raise ValueError("Invalid minimum severity")
+        if custom and "{diff}" not in custom:
+            raise ValueError("Custom prompt must include {diff}")
+        if record["diff_sha256"] != digest(diff) or (diff and diff not in prompt):
+            raise ValueError("Review input differs from collected/submitted bytes")
         if not record["coverage"]["complete"]:
             status, summary = "partial", "File coverage is incomplete; no clean conclusion or success checkpoint."
         elif not record["coverage"]["included"]:
             status, summary = "excluded/skipped", "No reviewable patches; no clean conclusion or success checkpoint."
         else:
+            record["submitted_diff_sha256"] = digest(diff)
             data = model_call(prompt, model, config, env.get("GOOGLE_API_KEY", ""))
             record["response_sha256"] = digest(data)
             record["reported_model_version"] = data.get("modelVersion") if isinstance(data, dict) else None
@@ -266,28 +272,32 @@ def analyze(diff, record, env, model_call=request_model, fragments=(), input_sin
     return payload, record
 
 
+def publication_identity(record):
+    # Stable across temporary directories, payload wording and fresh analyses.
+    # An identity is NOT a distributed claim or permission to publish.
+    return digest({key: record[key] for key in ("repo", "pr", "head", "base")})
+
+
 def publish(api, payload, record, journal):
-    # Persist before write, refuse replay even when a prior outcome is unknown.
-    if journal.exists():
-        raise RuntimeError("Publication journal exists; reconcile before retry")
+    """Fail closed: the provisioned runtime has no cross-job write coordinator.
+
+    Neither a local journal, an env opt-in, Actions concurrency nor a remote
+    review-list read can rule out an in-flight/unknown POST from another job.
+    There is intentionally no supported POST or automatic recovery path here.
+    Existing published/unknown evidence must never be overwritten or replayed.
+    """
     if len(payload["body"].encode("utf-8")) > 65000 or len(payload["comments"]) > 100:
         raise ValueError("Review exceeds conservative publication limits; evidence retained without posting")
-    endpoint = f"repos/{record['repo']}/pulls/{record['pr']}"
-    current = api(endpoint)
-    if current["head"]["sha"] != record["head"] or current["base"]["sha"] != record["base"]:
-        raise ValueError("PR head/base moved; review not published")
-    journal.write_text(json.dumps({"state": "unknown", "head": record["head"], "payload_sha256": digest(payload)}))
     try:
-        result = api(endpoint + "/reviews", payload)
-        if (not isinstance(result, dict) or not result.get("id") or result.get("commit_id") != record["head"]
-                or result.get("state") != "COMMENTED" or result.get("body") != payload["body"]):
-            raise ValueError("Unknown publication outcome")
-    except Exception:
-        # Preserve unknown state. Do not retry: the server may have accepted it.
-        raise RuntimeError("Publication failed or is unknown; stop and reconcile") from None
-    journal.write_text(json.dumps({"state": "published", "review_id": result["id"],
-                                   "success_checkpoint": record["status"] in SUCCESS}))
-    return result
+        # Exclusive creation protects evidence on this filesystem only; it is
+        # not represented as a durable cross-job publication claim.
+        with journal.open("x", encoding="utf-8") as output:
+            json.dump({"state": "blocked", "reason": "cross-job-coordination-unavailable",
+                       "publication_identity": publication_identity(record),
+                       "payload_sha256": digest(payload), "success_checkpoint": False}, output)
+    except FileExistsError:
+        raise RuntimeError("Publication evidence exists; preserved without replay") from None
+    raise RuntimeError("Publication disabled: durable cross-job claim/reconciliation unavailable; evidence retained")
 
 
 def run():

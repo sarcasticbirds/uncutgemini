@@ -126,7 +126,8 @@ jobs:
           fi
 
       # ── Gemini code review ─────────────────────────────────────
-      - name: Run Gemini review
+      # Publication fails closed until durable cross-job coordination is supported.
+      - name: Run Gemini analysis (publication disabled)
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}

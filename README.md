@@ -1,5 +1,7 @@
 # Uncut Gemini
 
+> **Candidate limitation:** automated review publication is disabled. Analysis, step summaries and proposed payload artifacts remain available. Re-enabling posting requires durable cross-job coordination and independent validation; there is no environment opt-in.
+
 AI code review + dependency scanning in one GitHub Action. One `uses:` line gets you Gemini inline review comments with suggestion fixes and Trivy vulnerability scanning.
 
 Zero runtime dependencies beyond Python stdlib and `gh` CLI. Two auditable Python files (`review.py` and `runtime.py`). No SDK, no Docker, no npm.
@@ -76,7 +78,7 @@ Every PR gets a single unified review comment covering:
 3. **Reconcile review scope** — paginates PR files and prior reviews; checks file and patch coverage against the current head/base
 4. **Gemini review** — sends the diff to Gemini with a structured prompt requesting line-targeted findings
 5. **Validate** — requires successful completion, strict JSON and consistent verdicts; checks findings against actually added lines. Rejections produce a partial review, never a clean result
-6. **Post review** — rechecks the head/base, then submits one advisory `COMMENT` review with provenance. Failed or uncertain publication is never automatically retried
+6. **Preserve analysis; do not post** — publication is disabled until durable cross-job claim/reconciliation is supported. Both entrypoints retain the proposed advisory `COMMENT` payload and fail the publication step without making a write
 
 ## Inputs
 
@@ -88,7 +90,7 @@ Every PR gets a single unified review comment covering:
 | `min-severity` | No | `MEDIUM` | Minimum review severity: `HIGH`, `MEDIUM`, or `NIT` |
 | `extra-instructions` | No | — | Additional instructions appended to the review prompt |
 | `exclude-paths` | No | docs, markdown, lockfiles | Comma-separated path patterns excluded from review. Set to `none` to review everything |
-| `custom-prompt` | No | — | Full replacement prompt (`{diff}`, `{guidelines}`, `{schema}` placeholders) |
+| `custom-prompt` | No | — | Replacement prompt; `{diff}` required, `{guidelines}` and `{schema}` optional. Inserted values remain opaque |
 | `trivy` | No | `true` | Run Trivy dependency scan |
 | `trivy-severity` | No | `CRITICAL,HIGH` | Trivy severity threshold |
 | `trivy-block-on` | No | `CRITICAL` | Block merge at this level (`CRITICAL`, `HIGH`, or `NONE`) |
@@ -166,7 +168,9 @@ Gemini findings appear as inline comments on the specific lines they reference, 
 
 Both workflows preserve input/result/payload/publication evidence as a seven-day Actions artifact. Treat these as repository source/review data: they contain paths and the reviewed diff, but not the model key. Review-body/comment size limits stop publication instead of risking a truncated success claim.
 
-An unknown POST outcome stops that invocation and leaves an `unknown` publication journal. **Do not blindly rerun it.** Inspect the retained payload, journal, current head and remote reviews first; the server may already have accepted the write. Only a human-intended fresh invocation after reconciliation is a retry. GitHub-hosted runners do not provide a durable cross-run lock; simultaneous independent workflow invocations can still publish duplicate advisory reviews, and a head may move between the final check and POST (the payload remains pinned to the analyzed commit).
+**Publication is fail-closed in this candidate**, including standalone use and direct calls to the runtime GitHub boundary. GitHub-hosted runners provide no provisioned durable cross-job claim/reconciliation mechanism. Local journals, new run directories, environment flags and remote review-list reads cannot prove that another POST is not still in flight. There is no opt-in bypass or automatic recovery path. `publication.json` records `blocked`, a stable repo/PR/head/base publication identity and payload hash; exclusive local creation protects evidence, not distributed delivery. Existing journals are preserved, regardless of state. Known-success, pending and unknown attempts do not authorize a new write. This deliberately removes unattended publication rather than claiming exactly-once delivery.
+
+Fresh same-SHA **analysis** remains supported, with new request/result/payload evidence; it is not publication recovery. Before enabling writes in future work, provision and independently validate a durable exclusive claim and reconciliation/authorized-recovery boundary that spans every publisher. Do not replay any real unknown write. The prior final-head-read/POST race would also remain without server-side conditional publication; there is currently no POST for that race to affect. The standalone trusted-code/secret boundary remains unchanged.
 
 ## Offline regression tests
 

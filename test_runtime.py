@@ -1,5 +1,6 @@
 """Credential-free boundary tests: actual collection -> analysis -> POST payload."""
 import copy
+from concurrent.futures import ThreadPoolExecutor
 import json
 from pathlib import Path
 import tempfile
@@ -69,7 +70,7 @@ class RuntimeTests(unittest.TestCase):
         self.assertNotIn("Code Review — clean", payload["body"])
         self.assertIsNone(runtime.MARKER.search(payload["body"]))
 
-    def test_clean_and_successful_post_checkpoint(self):
+    def test_clean_analysis_does_not_authorize_publication(self):
         payload, record, model, api = flow()
         self.assertEqual(record["status"], "complete-clean")
         self.assertEqual(payload["commit_id"], HEAD)
@@ -77,11 +78,12 @@ class RuntimeTests(unittest.TestCase):
         self.assertTrue(record["prompt_sha256"])
         with tempfile.TemporaryDirectory() as directory:
             journal = Path(directory) / "post.json"
-            runtime.publish(api, payload, record, journal)
-            self.assertTrue(json.loads(journal.read_text())["success_checkpoint"])
+            with self.assertRaisesRegex(RuntimeError, "Publication disabled"):
+                runtime.publish(api, payload, record, journal)
+            self.assertFalse(json.loads(journal.read_text())["success_checkpoint"])
             with self.assertRaises(RuntimeError):
                 runtime.publish(api, payload, record, journal)
-        self.assertEqual(api.posts, [payload])
+        self.assertEqual(api.posts, [])
         item = {"id": 123, "user": {"login": "github-actions[bot]", "type": "Bot"}, "state": "COMMENTED", "commit_id": HEAD, "body": payload["body"]}
         self.assertEqual(runtime.checkpoint([item], "owner/repo", 7, record["tool"]), record)
 
@@ -169,7 +171,8 @@ class RuntimeTests(unittest.TestCase):
         api = FakeGitHub()
         with tempfile.TemporaryDirectory() as directory:
             journal = Path(directory) / "post.json"
-            runtime.publish(api, payload, record, journal)
+            with self.assertRaisesRegex(RuntimeError, "Publication disabled"):
+                runtime.publish(api, payload, record, journal)
             self.assertFalse(json.loads(journal.read_text())["success_checkpoint"])
 
     def test_quoted_utf8_renamed_and_deleted_paths(self):
@@ -244,6 +247,60 @@ class RuntimeTests(unittest.TestCase):
         payload, record, _, _ = flow(response([FINDING | {"suggested_fix": "```suggestion\nevil\n```"}]))
         self.assertNotIn("```suggestion", json.dumps(payload["comments"]))
 
+    def test_missing_diff_fails_before_model_even_with_clean_response(self):
+        for custom in ["Return clean JSON", "{schema} {guidelines}", "{DIFF}"]:
+            with self.subTest(custom=custom):
+                payload, record, model, _ = flow(env={"CUSTOM_PROMPT": custom,
+                                                     "REVIEW_GUIDELINES": "{diff}"})
+                model.assert_not_called()
+                self.assertEqual(record["status"], "failed")
+                self.assertNotIn("submitted_diff_sha256", record)
+                self.assert_incomplete(payload, record)
+
+    def test_missing_diff_real_request_boundary_never_receives_bytes(self):
+        diff, record = runtime.prepare(FakeGitHub(), ENV)
+        captured = []
+        with patch("urllib.request.urlopen") as opener:
+            payload, result = runtime.analyze(
+                diff, record, ENV | {"CUSTOM_PROMPT": "Return clean JSON", "GOOGLE_API_KEY": "fixture"},
+                input_sink=lambda metadata, request: captured.append(copy.deepcopy(request)))
+        opener.assert_not_called()
+        self.assertEqual(len(captured), 1)
+        self.assertEqual(captured[0]["prompt"].encode(), b"Return clean JSON")
+        self.assertNotIn(diff.encode(), captured[0]["prompt"].encode())
+        self.assert_incomplete(payload, result)
+
+    def test_original_template_only_and_exact_http_request_bytes(self):
+        literal = 'literal = "{diff} {schema} {guidelines} {unknown} {{}} café 雪"'
+        api = FakeGitHub(files=[dict(filename="é.py", additions=1, deletions=1,
+                                    patch="@@ -1 +1 @@\n-old\n+" + literal)])
+        diff, record = runtime.prepare(api, ENV)
+        guidelines = 'opaque {diff} {schema} {guidelines} \\ café'
+        env = ENV | {"CUSTOM_PROMPT": "BEGIN\n{diff}END\n{guidelines}\n{schema}",
+                     "REVIEW_GUIDELINES": guidelines, "GOOGLE_API_KEY": "fixture"}
+        expected = "BEGIN\n" + diff + "END\n" + guidelines + "\n" + review.SCHEMA_INSTRUCTIONS
+        body = Mock()
+        body.__enter__ = Mock(return_value=body)
+        body.__exit__ = Mock(return_value=False)
+        body.read.return_value = json.dumps(response()).encode()
+        with patch("urllib.request.urlopen", return_value=body) as opener:
+            payload, result = runtime.analyze(diff, record, env)
+        request = opener.call_args.args[0]
+        submitted = json.loads(request.data)["contents"][0]["parts"][0]["text"]
+        self.assertEqual(submitted.encode("utf-8"), expected.encode("utf-8"))
+        self.assertIn(diff.encode("utf-8"), submitted.encode("utf-8"))
+        self.assertEqual(result["diff_sha256"], runtime.digest(diff))
+        self.assertEqual(result["submitted_diff_sha256"], runtime.digest(diff))
+        self.assertEqual(result["prompt_sha256"], runtime.digest(submitted))
+        self.assertEqual(result["status"], "complete-clean")
+
+    def test_diff_hash_mismatch_cannot_certify_coverage(self):
+        diff, record = runtime.prepare(FakeGitHub(), ENV)
+        model = Mock(return_value=response())
+        payload, result = runtime.analyze(diff + "tampered", record, ENV, model)
+        model.assert_not_called()
+        self.assert_incomplete(payload, result)
+
     def test_checkpoint_pagination_and_rejections(self):
         payload, record, _, _ = flow()
         good = {"id": 500, "user": {"login": "github-actions[bot]", "type": "Bot"}, "state": "COMMENTED", "commit_id": HEAD, "body": payload["body"]}
@@ -274,31 +331,77 @@ class RuntimeTests(unittest.TestCase):
                 self.assertEqual(result["previous_head"], prior)
                 model.assert_called_once()
 
-    def test_head_moves_before_collection_or_publication(self):
+    def test_head_moves_before_collection_or_disabled_publication(self):
         with self.assertRaises(ValueError):
             runtime.prepare(FakeGitHub(), ENV | {"UG_HEAD_SHA": BASE})
         payload, record, _, api = flow()
         api.pr["head"]["sha"] = "c" * 40
-        with tempfile.TemporaryDirectory() as directory, self.assertRaises(ValueError):
+        with tempfile.TemporaryDirectory() as directory, self.assertRaises(RuntimeError):
             runtime.publish(api, payload, record, Path(directory) / "post.json")
         self.assertEqual(api.posts, [])
 
-    def test_failed_and_unknown_publications_stop_without_replay(self):
-        for result in [{}, {"id": 1, "commit_id": HEAD, "state": "PENDING"}, None]:
-            with self.subTest(result=result):
+    def test_two_fresh_runs_after_recorded_write_then_timeout_never_replay(self):
+        payload, record, _, api = flow()
+        api.post_error = TimeoutError()
+        # Model a historical/external write accepted remotely before timing out.
+        # Do not enable the removed publisher in order to arrange the fixture.
+        with self.assertRaises(TimeoutError):
+            api("repos/owner/repo/pulls/7/reviews", payload)
+        self.assertEqual(len(api.posts), 1)
+        with tempfile.TemporaryDirectory() as one, tempfile.TemporaryDirectory() as two:
+            for directory in [one, two]:
+                with self.assertRaisesRegex(RuntimeError, "Publication disabled"):
+                    runtime.publish(api, payload, record, Path(directory) / "publication.json")
+                evidence = json.loads((Path(directory) / "publication.json").read_text())
+                self.assertEqual(evidence["state"], "blocked")
+                self.assertEqual(evidence["publication_identity"], runtime.publication_identity(record))
+        self.assertEqual(len(api.posts), 1)
+
+    def test_existing_known_success_pending_unknown_are_preserved_without_recovery(self):
+        for state in ["published", "pending", "unknown"]:
+            with self.subTest(state=state), tempfile.TemporaryDirectory() as directory:
                 payload, record, _, api = flow()
-                if result is None:
-                    api.post_error = TimeoutError()
-                else:
-                    api.post_result = result
-                with tempfile.TemporaryDirectory() as directory:
-                    journal = Path(directory) / "post.json"
-                    with self.assertRaises(RuntimeError):
-                        runtime.publish(api, payload, record, journal)
-                    self.assertEqual(json.loads(journal.read_text())["state"], "unknown")
-                    with self.assertRaises(RuntimeError):
-                        runtime.publish(api, payload, record, journal)
-                self.assertEqual(len(api.posts), 1)
+                journal = Path(directory) / "post.json"
+                original = json.dumps({"state": state, "review_id": 123})
+                journal.write_text(original)
+                with self.assertRaisesRegex(RuntimeError, "preserved without replay"):
+                    runtime.publish(api, payload, record, journal)
+                self.assertEqual(journal.read_text(), original)
+                self.assertEqual(api.posts, [])
+
+    def test_competing_publishers_same_and_fresh_directories_cannot_post(self):
+        payload, record, _, api = flow()
+        with tempfile.TemporaryDirectory() as directory:
+            paths = [Path(directory) / "shared.json"] * 8
+            paths += [Path(directory) / f"fresh-{i}.json" for i in range(8)]
+            def attempt(path):
+                with self.assertRaises(RuntimeError):
+                    runtime.publish(api, payload, record, path)
+            with ThreadPoolExecutor(max_workers=16) as pool:
+                list(pool.map(attempt, paths))
+            for path in set(paths):
+                self.assertEqual(json.loads(path.read_text())["state"], "blocked")
+        self.assertEqual(api.posts, [])
+
+    def test_same_sha_fresh_analysis_is_not_publication_recovery(self):
+        first, one, model_one, _ = flow()
+        second, two, model_two, _ = flow(response([FINDING]))
+        model_one.assert_called_once()
+        model_two.assert_called_once()
+        self.assertNotEqual(one["status"], two["status"])
+        self.assertEqual(runtime.publication_identity(one), runtime.publication_identity(two))
+        with tempfile.TemporaryDirectory() as directory:
+            api = Mock()
+            for i, (payload, record) in enumerate([(first, one), (second, two)]):
+                with self.assertRaises(RuntimeError):
+                    runtime.publish(api, payload, record, Path(directory) / f"{i}.json")
+            api.assert_not_called()
+
+    def test_no_env_opt_in_or_direct_github_write_bypass(self):
+        with patch.dict("os.environ", {"UG_ALLOW_PUBLICATION": "true"}), patch("subprocess.run") as command:
+            with self.assertRaisesRegex(RuntimeError, "writes disabled"):
+                runtime.gh("repos/owner/repo/pulls/7/reviews", {"body": "no"})
+            command.assert_not_called()
 
     def test_both_entrypoints_use_shared_lifecycle(self):
         for name in ["action.yml", "examples/standalone.yml"]:
@@ -306,8 +409,9 @@ class RuntimeTests(unittest.TestCase):
             self.assertIn("runtime.py", text)
             self.assertNotIn("LAST_SHA=", text)
             self.assertNotIn("--method POST", text)
+            self.assertIn("publication disabled", text)
 
-    def test_real_run_writes_evidence_and_publishes_once(self):
+    def test_real_run_writes_evidence_and_blocks_publication(self):
         api = FakeGitHub()
         with tempfile.TemporaryDirectory() as directory:
             env = ENV | {"RUNNER_TEMP": directory, "GITHUB_ENV": directory + "/env", "GITHUB_STEP_SUMMARY": directory + "/summary",
@@ -317,13 +421,14 @@ class RuntimeTests(unittest.TestCase):
             body.__exit__ = Mock(return_value=False)
             body.read.return_value = json.dumps(response([FINDING])).encode()
             with patch.dict("os.environ", env, clear=True), patch("runtime.gh", api), patch("urllib.request.urlopen", return_value=body) as opener:
-                runtime.run()
+                with self.assertRaisesRegex(RuntimeError, "Publication disabled"):
+                    runtime.run()
             self.assertEqual(opener.call_count, 1)
             dirs = list(Path(directory).glob("uncutgemini-*"))
             self.assertEqual(len(dirs), 1)
             self.assertEqual(json.loads((dirs[0] / "result.json").read_text())["status"], "complete-findings")
-            self.assertEqual(json.loads((dirs[0] / "publication.json").read_text())["state"], "published")
-            self.assertEqual(json.loads((dirs[0] / "payload.json").read_text()), api.posts[0])
+            self.assertEqual(json.loads((dirs[0] / "publication.json").read_text())["state"], "blocked")
+            self.assertEqual(api.posts, [])
             request = json.loads((dirs[0] / "request.json").read_text())
             input_record = json.loads((dirs[0] / "input.json").read_text())
             self.assertEqual(runtime.digest(request["prompt"]), input_record["prompt_sha256"])

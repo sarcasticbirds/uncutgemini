@@ -26,7 +26,7 @@ inputs:
     required: false
     default: ''
   custom-prompt:
-    description: 'Full replacement prompt. Use {diff}, {guidelines}, {schema} placeholders.'
+    description: 'Replacement prompt; {diff} is required. Optional {guidelines}, {schema} placeholders.'
     required: false
     default: ''
   trivy:
@@ -214,7 +214,8 @@ runs:
         fi
 
     # ── Gemini code review ─────────────────────────────────────────
-    - name: Run Gemini review
+    # Publication fails closed until durable cross-job coordination is supported.
+    - name: Run Gemini analysis (publication disabled)
       shell: bash
       continue-on-error: true
       env:
