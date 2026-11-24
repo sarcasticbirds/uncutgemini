@@ -25,6 +25,10 @@ and each case's `final_payload` (the last explicitly recorded attempt). It is a
 dry-run `COMMENT` payload, never sent to GitHub. Failed and partial payloads have
 no success checkpoint. Retry fixtures are explicit ordered data, not automatic
 retry policy or a network runner. Nothing imports/executes snapshot code.
+The offline harness pins the prompt clock to `2026-11-23` and records
+`replay_date`, so prompt hashes and payload bytes remain stable across host dates.
+Production prompt dating is unchanged. Recovery found that the original harness
+was only same-day deterministic; its saved November 23 evidence predates this fix.
 
 If Python is absent, the implementation guest used locally downloaded uv
 **0.13.9** for aarch64 Linux, then `uv python install 3.12.12` and

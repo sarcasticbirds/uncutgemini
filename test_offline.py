@@ -1,5 +1,6 @@
 """Offline corpus integrity, runtime-boundary and denominator regressions."""
 import copy
+import datetime
 import json
 import os
 from pathlib import Path
@@ -173,6 +174,20 @@ class OfflineTests(unittest.TestCase):
             second = offline.replay(self.root, manifest)
         self.assertEqual(first, second)
         self.assertNotIn("must-not-appear", json.dumps(first))
+
+    def test_replay_is_stable_across_host_dates_and_restores_clock(self):
+        manifest = offline.verify(self.root)
+        real_date = datetime.date
+        results = []
+        for day in [real_date(2026, 11, 23), real_date(2027, 1, 1)]:
+            with patch.object(runtime.review.datetime, "date") as host_date:
+                host_date.today.return_value = day
+                results.append(offline.replay(self.root, manifest))
+                self.assertIs(runtime.review.datetime.date, host_date)
+                self.assertEqual(host_date.today(), day)
+        self.assertEqual(results[0], results[1])
+        self.assertEqual(results[0]["replay_date"], "2026-11-23")
+        self.assertIs(runtime.review.datetime.date, real_date)
 
     def test_failure_partial_duplicate_coverage_and_retry_denominators(self):
         result = offline.replay(self.root, offline.verify(self.root))

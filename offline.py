@@ -5,6 +5,7 @@ is data: it is never imported, compiled, or executed.
 """
 import argparse
 from collections import Counter
+import datetime
 from decimal import Decimal
 import difflib
 import hashlib
@@ -14,6 +15,14 @@ import re
 from unittest.mock import patch
 
 import runtime
+
+
+class ReplayDate(datetime.date):
+    """Fixed fixture clock; production prompt dating remains unchanged."""
+
+    @classmethod
+    def today(cls):
+        return cls(2026, 11, 23)
 
 
 def load(path):
@@ -191,7 +200,8 @@ def replay_case(root, case):
               "files_sha256": runtime.digest(fixture["files"])}
     results = []
     with patch.object(runtime, "request_model", forbidden), patch.object(runtime, "gh", forbidden), \
-            patch.object(runtime, "publish", forbidden), patch("urllib.request.urlopen", forbidden):
+            patch.object(runtime, "publish", forbidden), patch("urllib.request.urlopen", forbidden), \
+            patch.object(runtime.review.datetime, "date", ReplayDate):
         for index, attempt in enumerate(fixture["attempts"]):
             calls = []
             def mock_model(prompt, model, config, api_key):
@@ -223,6 +233,7 @@ def replay(root, manifest):
     unknown_cost = sum(a["usage"]["usd"] is None for a in attempts)
     subtotal = sum((Decimal(a["usage"]["usd"]) for a in attempts if a["usage"]["usd"] is not None), Decimal(0))
     return {"schema_version": 1, "qualification": "scripted-protocol-screen-not-model-quality",
+             "replay_date": ReplayDate.today().isoformat(),
             "manifest_sha256": sha(root / "manifest.json"), "cases": cases,
             "score": {"case_denominator": len(cases), "attempt_denominator": len(attempts),
                       "substantive_bug_denominator": manifest["inventory"]["substantive_bugs"],
