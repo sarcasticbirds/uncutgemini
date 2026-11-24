@@ -29,9 +29,9 @@ def git(*args):
     return subprocess.run(["git", *args], check=True, capture_output=True).stdout
 
 
-def require(condition):
+def require(condition, detail="packet metadata or content differs from trusted expectation"):
     if not condition:
-        raise ValueError("Historical packet integrity mismatch")
+        raise ValueError(f"Historical packet integrity mismatch: {detail}")
 
 
 def collect(root):
@@ -94,21 +94,57 @@ def collect(root):
 
 
 def verify(root):
-    for name, fixed, parent, _, _ in PACKETS:
-        directory = root / name
-        metadata = json.loads((directory / "packet.json").read_text())
-        require((metadata["candidate"], metadata["fix_sha"], metadata["before_sha"]) == (name, fixed, parent))
-        require(metadata["introduction_sha"] == INTRO and metadata["introduction_parents"] == [])
-        require(metadata["accepted_manifest"] is False and metadata["fresh_holdout"] is False)
-        require(metadata["independent_adjudication"] is False)
-        for artifact in metadata["artifacts"]:
-            path = (directory / artifact["path"]).resolve()
-            require(path.is_relative_to(directory.resolve()))
-            data = path.read_bytes()
-            require(len(data) == artifact["bytes"] and sha(data) == artifact["sha256"])
-            if "git_blob" in artifact:
-                require(hashlib.sha1(b"blob " + str(len(data)).encode() + b"\0" + data).hexdigest() == artifact["git_blob"])
-    return "Two development-visible candidate packets verified; not accepted corpus cases"
+    # This code-owned inventory is authored from pinned Git objects, NEVER from
+    # the packet being verified. Treat changing it like changing verifier code.
+    expected = json.loads(Path(__file__).with_name("history_expectations.json").read_text())
+
+    def unique_object(pairs):
+        result = {}
+        for key, value in pairs:
+            require(key not in result, f"duplicate JSON key: {key}")
+            result[key] = value
+        return result
+
+    try:
+        root = Path(root)
+        require(not root.is_symlink() and root.is_dir(), "packet root must be a real directory")
+        names = set(expected["packets"])
+        entries = {path.name for path in root.iterdir()}
+        require(entries in (names, names | {"README.md"}), "unexpected or missing packet at root")
+        if "README.md" in entries:
+            note = root / "README.md"
+            require(not note.is_symlink() and note.is_file(), "unsafe root README.md")
+            require(sha(note.read_bytes()) == expected["readme_sha256"], "root README.md changed")
+        for name, trusted in expected["packets"].items():
+            directory = root / name
+            require(not directory.is_symlink() and directory.is_dir(), f"{name}: unsafe packet directory")
+            # Scan without following symlinks; reject links even when they point
+            # inside the packet. Only trusted canonical paths are ever opened.
+            files = {"packet.json"} | {item["path"] for item in trusted["artifacts"]}
+            directories = {str(parent) for item in files for parent in Path(item).parents if str(parent) != "."}
+            actual = set()
+            for path in directory.rglob("*"):
+                relative = path.relative_to(directory).as_posix()
+                require(not path.is_symlink(), f"{name}/{relative}: symlinks forbidden")
+                require((relative in files and path.is_file()) or
+                        (relative in directories and path.is_dir()), f"{name}/{relative}: unexpected path or type")
+                actual.add(relative)
+            require(actual == files | directories, f"{name}: missing artifact or directory")
+            metadata = json.loads((directory / "packet.json").read_text(), object_pairs_hook=unique_object)
+            # Exact serialized equality also distinguishes bool/int and enforces
+            # all required fields, attribution, roles, inventory and unique paths.
+            require(json.dumps(metadata, sort_keys=True) == json.dumps(trusted, sort_keys=True),
+                    f"{name}/packet.json: metadata/inventory differs from trusted expectation")
+            for artifact in trusted["artifacts"]:
+                data = (directory / artifact["path"]).read_bytes()
+                require(len(data) == artifact["bytes"] and sha(data) == artifact["sha256"],
+                        f"{name}/{artifact['path']}: bytes/hash differ from trusted expectation")
+                if "git_blob" in artifact:
+                    require(hashlib.sha1(b"blob " + str(len(data)).encode() + b"\0" + data).hexdigest() == artifact["git_blob"],
+                            f"{name}/{artifact['path']}: Git blob differs")
+    except (OSError, UnicodeError, ValueError, RecursionError) as error:
+        raise ValueError(f"Historical candidate verification failed: {error}") from error
+    return "Two development-visible candidate identity integrity checks passed; not accepted corpus cases or historical admission"
 
 
 if __name__ == "__main__":
@@ -116,6 +152,10 @@ if __name__ == "__main__":
     parser.add_argument("output", type=Path)
     parser.add_argument("--verify", action="store_true")
     args = parser.parse_args()
-    if not args.verify:
-        collect(args.output)
-    print(verify(args.output))
+    try:
+        if not args.verify:
+            collect(args.output)
+        result = verify(args.output)
+    except (OSError, ValueError, subprocess.CalledProcessError) as error:
+        parser.exit(1, f"Historical candidate verification failed: {error}\n")
+    print(result)
