@@ -3,7 +3,7 @@
 # the reusable action. Use this if you can't reference external actions
 # (e.g., GitHub Enterprise with restricted action sources).
 #
-# Also copy review.py to .github/scripts/review.py in your repo.
+# Also copy review.py AND runtime.py to .github/scripts/ in your repo.
 #
 # Requires: GOOGLE_API_KEY set as a repository secret.
 name: Code Review
@@ -24,6 +24,8 @@ jobs:
       PR_NUMBER: ${{ github.event.pull_request.number }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       # ── Trivy dependency scan ──────────────────────────────────
       - name: Trivy scan
@@ -124,45 +126,12 @@ jobs:
           fi
 
       # ── Gemini code review ─────────────────────────────────────
-      - name: Detect review scope
-        env:
-          GH_TOKEN: ${{ github.token }}
-          CURRENT_SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          LAST_SHA=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/reviews" \
-            --jq '[.[] | select(.user.login == "github-actions[bot]")] | sort_by(.submitted_at) | last | .commit_id // empty' 2>/dev/null || true)
-          if [ -n "$LAST_SHA" ] && [ "$LAST_SHA" = "$CURRENT_SHA" ]; then
-            echo "SKIP_REVIEW=true" >> "$GITHUB_ENV"
-          elif [ -n "$LAST_SHA" ]; then
-            echo "INCREMENTAL=true" >> "$GITHUB_ENV"
-            echo "LAST_REVIEWED_SHA=$LAST_SHA" >> "$GITHUB_ENV"
-          else
-            echo "INCREMENTAL=false" >> "$GITHUB_ENV"
-          fi
-
-      - name: Get PR diff
-        if: env.SKIP_REVIEW != 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          if [ "$INCREMENTAL" = "true" ]; then
-            CURRENT_SHA="${{ github.event.pull_request.head.sha }}"
-            gh api "repos/$GITHUB_REPOSITORY/compare/${LAST_REVIEWED_SHA}...${CURRENT_SHA}" \
-              --jq '.files[] | "diff --git a/\(.filename) b/\(.filename)\n\(.patch // "")"' \
-              > /tmp/pr.diff 2>/dev/null || true
-          fi
-          if [ ! -s /tmp/pr.diff ]; then
-            gh pr diff "$PR_NUMBER" > /tmp/pr.diff
-            echo "INCREMENTAL=false" >> "$GITHUB_ENV"
-          fi
-          if [ ! -s /tmp/pr.diff ]; then
-            echo "SKIP_REVIEW=true" >> "$GITHUB_ENV"
-          fi
-
-      - name: Run Gemini review
-        if: env.SKIP_REVIEW != 'true'
+      # Publication fails closed until durable cross-job coordination is supported.
+      - name: Run Gemini analysis (publication disabled)
         continue-on-error: true
         env:
+          GH_TOKEN: ${{ github.token }}
+          UG_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           GEMINI_MODEL: 'gemini-3.1-pro-preview'
           MIN_SEVERITY: 'MEDIUM'
@@ -170,17 +139,12 @@ jobs:
           if [ -f ".github/review-guidelines.md" ]; then
             export REVIEW_GUIDELINES="$(cat .github/review-guidelines.md)"
           fi
-          python3 .github/scripts/review.py
+          python3 .github/scripts/runtime.py
 
-      - name: Post review
-        if: always() && env.SKIP_REVIEW != 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          if [ -f /tmp/review-summary.md ]; then
-            cat /tmp/review-summary.md >> "$GITHUB_STEP_SUMMARY"
-          fi
-          if [ -f /tmp/review-payload.json ]; then
-            gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/reviews" \
-              --method POST --input /tmp/review-payload.json
-          fi
+      - name: Preserve review evidence
+        if: always() && env.UG_EVIDENCE_DIR != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: uncutgemini-${{ github.run_id }}-${{ github.run_attempt }}-${{ env.PR_NUMBER }}
+          path: ${{ env.UG_EVIDENCE_DIR }}
+          retention-days: 7

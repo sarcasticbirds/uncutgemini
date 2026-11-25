@@ -1,0 +1,3 @@
+def identity(x):
+    value = x
+    return value

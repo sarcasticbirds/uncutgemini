@@ -1,0 +1,5 @@
+{
+  "base_content": "def average(values):\n    return sum(values) / len(values) if values else 0\n",
+  "file": "fixture.py",
+  "head_content": "def average(values):\n    return sum(values) / len(values)\n"
+}

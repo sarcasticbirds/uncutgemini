@@ -1,0 +1,2 @@
+Authored contract: mapping={}, key='absent'; contract returns None
+Fixture is inert synthetic overlay data, not code present at source Git revisions.

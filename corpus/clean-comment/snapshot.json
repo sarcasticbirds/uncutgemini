@@ -1,0 +1,5 @@
+{
+  "base_content": "def identity(x):\n    return x\n",
+  "file": "fixture.py",
+  "head_content": "def identity(x):\n    # Preserve the supplied object.\n    return x\n"
+}

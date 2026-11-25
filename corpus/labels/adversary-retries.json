@@ -1,0 +1,7 @@
+{
+  "bugs": [],
+  "case_id": "adversary-retries",
+  "clean_rationale": "No substantive source defect claimed under the supplied contract. Protocol/coverage adversary, not a historical bug.",
+  "schema_version": 1,
+  "status": "hawk-provisional-unsealed"
+}

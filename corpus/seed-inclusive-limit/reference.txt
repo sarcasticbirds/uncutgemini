@@ -1,0 +1,2 @@
+def within_limit(size, limit):
+    return size <= limit

@@ -1,0 +1,856 @@
+{
+  "cases": [
+    {
+      "artifacts": {
+        "context": {
+          "path": "seed-empty-average/context.txt",
+          "sha256": "c9aac2d89e4b9c3cfe608a0027359f3ec04d8d5cc3b9ac121e0bb6bdaa31ea6e"
+        },
+        "diff": {
+          "path": "seed-empty-average/change.diff",
+          "sha256": "5eb09182bcdc3ebd9dfa9fb7837e0087b71c28ac064e216c1dda7975bb865ab3"
+        },
+        "labels": {
+          "path": "labels/seed-empty-average.json",
+          "sha256": "9aff291264350efbc4494ed5743fde730c49725ebc50bf30072a2282c207c2c4"
+        },
+        "reference": {
+          "path": "seed-empty-average/reference.txt",
+          "sha256": "7a440973a7c22b852f34ec0b3614acf6b8d4b0ec4bb0f09b96d54bd899a958c8"
+        },
+        "replay": {
+          "path": "seed-empty-average/replay.json",
+          "sha256": "af6fe6b64df807d787dead777df860ec7e6751b81ba0c82db231dbd489f84943"
+        },
+        "snapshot": {
+          "path": "seed-empty-average/snapshot.json",
+          "sha256": "0409815beb4dfff44c9a7611c75d177798e0a9b6988936fd7e2b49fe4f364822"
+        }
+      },
+      "base_sha": "566bc0a65693ba7fc8262ba9003103a42a465452",
+      "category": "seeded",
+      "family": "empty-average",
+      "head_sha": "50368197b787fc553620d0de723d0f4777de19a0",
+      "id": "seed-empty-average",
+      "provenance": {
+        "access": "authorized-repository-and-authored-fixtures",
+        "authored_by": "Hawk; not independently adjudicated",
+        "kind": "synthetic-overlay",
+        "redaction": "no-private-source-used",
+        "source": "sarcasticbirds/uncutgemini runtime/test protocol at source base/head; content is an authored overlay, NOT an actual commit snapshot"
+      },
+      "split": "development"
+    },
+    {
+      "artifacts": {
+        "context": {
+          "path": "clean-empty-average/context.txt",
+          "sha256": "c9aac2d89e4b9c3cfe608a0027359f3ec04d8d5cc3b9ac121e0bb6bdaa31ea6e"
+        },
+        "diff": {
+          "path": "clean-empty-average/change.diff",
+          "sha256": "af243cfe69b18f923450033bb89b5189dba4088258f8dc8d4ac7349a8dea7971"
+        },
+        "labels": {
+          "path": "labels/clean-empty-average.json",
+          "sha256": "5e25a2866e8385ee8ed52658673d436a6b1816a48d776ce6c49dea13025ad39f"
+        },
+        "reference": {
+          "path": "clean-empty-average/reference.txt",
+          "sha256": "7a440973a7c22b852f34ec0b3614acf6b8d4b0ec4bb0f09b96d54bd899a958c8"
+        },
+        "replay": {
+          "path": "clean-empty-average/replay.json",
+          "sha256": "d9ba3730412ea16ac97ce8c4a58b0412c21a2f7f255e75c459b9a71993407e9c"
+        },
+        "snapshot": {
+          "path": "clean-empty-average/snapshot.json",
+          "sha256": "045c3e5ae84d81ef205701293690b18cfbaa47e216c49dbca56773f311a15fc2"
+        }
+      },
+      "base_sha": "566bc0a65693ba7fc8262ba9003103a42a465452",
+      "category": "clean",
+      "family": "empty-average",
+      "head_sha": "50368197b787fc553620d0de723d0f4777de19a0",
+      "id": "clean-empty-average",
+      "provenance": {
+        "access": "authorized-repository-and-authored-fixtures",
+        "authored_by": "Hawk; not independently adjudicated",
+        "kind": "synthetic-overlay",
+        "redaction": "no-private-source-used",
+        "source": "sarcasticbirds/uncutgemini runtime/test protocol at source base/head; content is an authored overlay, NOT an actual commit snapshot"
+      },
+      "split": "development"
+    },
+    {
+      "artifacts": {
+        "context": {
+          "path": "seed-token-auth/context.txt",
+          "sha256": "6e117ea869c7e8f4b01534d7db01cdeb3c8ed71beaa0b25dcd5e4b7b530e75de"
+        },
+        "diff": {
+          "path": "seed-token-auth/change.diff",
+          "sha256": "f4560c6798305e76365a40209677ea37c45bd92c810069a2fd2e7bcecb771c6e"
+        },
+        "labels": {
+          "path": "labels/seed-token-auth.json",
+          "sha256": "e1600ee7d1ef4937f3ba20e5f19f940a69eb9d928dc734632ea474a60e02935b"
+        },
+        "reference": {
+          "path": "seed-token-auth/reference.txt",
+          "sha256": "c609ab58239cdeec78f4d1f7a5dd0457c01f16738f62e76fd8f8b85c04c3fa5d"
+        },
+        "replay": {
+          "path": "seed-token-auth/replay.json",
+          "sha256": "5138033674e3b1f98f3345bcdbf92cee39d33696f25f664aaf8b8af1726f7f9b"
+        },
+        "snapshot": {
+          "path": "seed-token-auth/snapshot.json",
+          "sha256": "158837b50c6817ab532486a10b292d3e3894b060febcf3cfb7928440dcf31fe0"
+        }
+      },
+      "base_sha": "566bc0a65693ba7fc8262ba9003103a42a465452",
+      "category": "seeded",
+      "family": "token-auth",
+      "head_sha": "50368197b787fc553620d0de723d0f4777de19a0",
+      "id": "seed-token-auth",
+      "provenance": {
+        "access": "authorized-repository-and-authored-fixtures",
+        "authored_by": "Hawk; not independently adjudicated",
+        "kind": "synthetic-overlay",
+        "redaction": "no-private-source-used",
+        "source": "sarcasticbirds/uncutgemini runtime/test protocol at source base/head; content is an authored overlay, NOT an actual commit snapshot"
+      },
+      "split": "development"
+    },
+    {
+      "artifacts": {
+        "context": {
+          "path": "clean-token-auth/context.txt",
+          "sha256": "6e117ea869c7e8f4b01534d7db01cdeb3c8ed71beaa0b25dcd5e4b7b530e75de"
+        },
+        "diff": {
+          "path": "clean-token-auth/change.diff",
+          "sha256": "bee486c3ac7b5002ec32869531762b85024693c857e2e11d30d58b15303174c5"
+        },
+        "labels": {
+          "path": "labels/clean-token-auth.json",
+          "sha256": "8cbff7c1079e843f9f6630e1e29702741be163c95da4492bf3f4baaf33a00918"
+        },
+        "reference": {
+          "path": "clean-token-auth/reference.txt",
+          "sha256": "c609ab58239cdeec78f4d1f7a5dd0457c01f16738f62e76fd8f8b85c04c3fa5d"
+        },
+        "replay": {
+          "path": "clean-token-auth/replay.json",
+          "sha256": "3e342488629cf811d5899934bb3e7c813a22d1ea8a6fdc7a0f804cba800827c0"
+        },
+        "snapshot": {
+          "path": "clean-token-auth/snapshot.json",
+          "sha256": "084ab96f136e0c4305ce250550fb1ee18382317e825b2aed0d1f0a71fda50724"
+        }
+      },
+      "base_sha": "566bc0a65693ba7fc8262ba9003103a42a465452",
+      "category": "clean",
+      "family": "token-auth",
+      "head_sha": "50368197b787fc553620d0de723d0f4777de19a0",
+      "id": "clean-token-auth",
+      "provenance": {
+        "access": "authorized-repository-and-authored-fixtures",
+        "authored_by": "Hawk; not independently adjudicated",
+        "kind": "synthetic-overlay",
+        "redaction": "no-private-source-used",
+        "source": "sarcasticbirds/uncutgemini runtime/test protocol at source base/head; content is an authored overlay, NOT an actual commit snapshot"
+      },
+      "split": "development"
+    },
+    {
+      "artifacts": {
+        "context": {
+          "path": "seed-inclusive-limit/context.txt",
+          "sha256": "437d05e2f3192a611a703c3417b402b7ef2e6ce0d406cff943bdf01b7d33f2c9"
+        },
+        "diff": {
+          "path": "seed-inclusive-limit/change.diff",
+          "sha256": "f70a2300f58bf7dc0cabdb799c3a141a23d3b0e0a2fd408f2828a2704d8e1fe2"
+        },
+        "labels": {
+          "path": "labels/seed-inclusive-limit.json",
+          "sha256": "40e426af6bb17a0496bfe9e765a94fef8498e9a9d93b91d2bd565e715f1895eb"
+        },
+        "reference": {
+          "path": "seed-inclusive-limit/reference.txt",
+          "sha256": "24c56cf49ca175e3986295feaf50ceae6921229f3c45f10836f54b8db8585770"
+        },
+        "replay": {
+          "path": "seed-inclusive-limit/replay.json",
+          "sha256": "cae550cd02333e0329834f3eccb92e4da3246f8498e7877f834adbb8b6bfee53"
+        },
+        "snapshot": {
+          "path": "seed-inclusive-limit/snapshot.json",
+          "sha256": "f5a9b22fef5581e40b38a1c2f35925018659fdf99323ca5ed1398f4bcfd14c7f"
+        }
+      },
+      "base_sha": "566bc0a65693ba7fc8262ba9003103a42a465452",
+      "category": "seeded",
+      "family": "inclusive-limit",
+      "head_sha": "50368197b787fc553620d0de723d0f4777de19a0",
+      "id": "seed-inclusive-limit",
+      "provenance": {
+        "access": "authorized-repository-and-authored-fixtures",
+        "authored_by": "Hawk; not independently adjudicated",
+        "kind": "synthetic-overlay",
+        "redaction": "no-private-source-used",
+        "source": "sarcasticbirds/uncutgemini runtime/test protocol at source base/head; content is an authored overlay, NOT an actual commit snapshot"
+      },
+      "split": "development"
+    },
+    {
+      "artifacts": {
+        "context": {
+          "path": "clean-inclusive-limit/context.txt",
+          "sha256": "437d05e2f3192a611a703c3417b402b7ef2e6ce0d406cff943bdf01b7d33f2c9"
+        },
+        "diff": {
+          "path": "clean-inclusive-limit/change.diff",
+          "sha256": "58b52aa8ec0ab7c3d06245ce7418cc4c345725cb64fc41e6ec8d5d0c91136ec2"
+        },
+        "labels": {
+          "path": "labels/clean-inclusive-limit.json",
+          "sha256": "d57815d5e3a43b4e9059a38958e17d5360395707929f1886b10150bf309b2461"
+        },
+        "reference": {
+          "path": "clean-inclusive-limit/reference.txt",
+          "sha256": "24c56cf49ca175e3986295feaf50ceae6921229f3c45f10836f54b8db8585770"
+        },
+        "replay": {
+          "path": "clean-inclusive-limit/replay.json",
+          "sha256": "e9638a5ac091ea929e82fe819d7c5e345e82aa3c123c4678ca0f621f825070de"
+        },
+        "snapshot": {
+          "path": "clean-inclusive-limit/snapshot.json",
+          "sha256": "d063f40627a7860d18779b8a8b76a1acb4564a247c9587e385318a0315540a66"
+        }
+      },
+      "base_sha": "566bc0a65693ba7fc8262ba9003103a42a465452",
+      "category": "clean",
+      "family": "inclusive-limit",
+      "head_sha": "50368197b787fc553620d0de723d0f4777de19a0",
+      "id": "clean-inclusive-limit",
+      "provenance": {
+        "access": "authorized-repository-and-authored-fixtures",
+        "authored_by": "Hawk; not independently adjudicated",
+        "kind": "synthetic-overlay",
+        "redaction": "no-private-source-used",
+        "source": "sarcasticbirds/uncutgemini runtime/test protocol at source base/head; content is an authored overlay, NOT an actual commit snapshot"
+      },
+      "split": "development"
+    },
+    {
+      "artifacts": {
+        "context": {
+          "path": "seed-private-copy/context.txt",
+          "sha256": "eaacf0be407c5fc422c18eb4c8de012e154221b876e45cb3a97030c896331fc3"
+        },
+        "diff": {
+          "path": "seed-private-copy/change.diff",
+          "sha256": "3f3ba2d573257ff2c785173fe2f2e589542639486c484fe5be6ee3cf7f0304a9"
+        },
+        "labels": {
+          "path": "labels/seed-private-copy.json",
+          "sha256": "7cf22402f4166353650ff5e31917afce755a19f021777c3736d76a955c53e765"
+        },
+        "reference": {
+          "path": "seed-private-copy/reference.txt",
+          "sha256": "219b353430c38ed7f4172eddfcdc18b2db205ff036dd01ef513c76efdb476da1"
+        },
+        "replay": {
+          "path": "seed-private-copy/replay.json",
+          "sha256": "3a2f1159d56acec1d8063bfa14ad77766aa8b009b2e69b615eb342ff5291cb74"
+        },
+        "snapshot": {
+          "path": "seed-private-copy/snapshot.json",
+          "sha256": "a50d40e3e894f52fcdce862edb4a8745d3c216e6679b70f15750fd0e3d46ad22"
+        }
+      },
+      "base_sha": "566bc0a65693ba7fc8262ba9003103a42a465452",
+      "category": "seeded",
+      "family": "private-copy",
+      "head_sha": "50368197b787fc553620d0de723d0f4777de19a0",
+      "id": "seed-private-copy",
+      "provenance": {
+        "access": "authorized-repository-and-authored-fixtures",
+        "authored_by": "Hawk; not independently adjudicated",
+        "kind": "synthetic-overlay",
+        "redaction": "no-private-source-used",
+        "source": "sarcasticbirds/uncutgemini runtime/test protocol at source base/head; content is an authored overlay, NOT an actual commit snapshot"
+      },
+      "split": "holdout"
+    },
+    {
+      "artifacts": {
+        "context": {
+          "path": "clean-private-copy/context.txt",
+          "sha256": "eaacf0be407c5fc422c18eb4c8de012e154221b876e45cb3a97030c896331fc3"
+        },
+        "diff": {
+          "path": "clean-private-copy/change.diff",
+          "sha256": "c38b924cd3ca5fabd11628c7ca5777162983d8eb0a2b4385bb486bfd1be007d8"
+        },
+        "labels": {
+          "path": "labels/clean-private-copy.json",
+          "sha256": "c3ddcca319663ba177c01883b7f7f4f723cc880dec9faf029e1dc7d0b52ce9a0"
+        },
+        "reference": {
+          "path": "clean-private-copy/reference.txt",
+          "sha256": "219b353430c38ed7f4172eddfcdc18b2db205ff036dd01ef513c76efdb476da1"
+        },
+        "replay": {
+          "path": "clean-private-copy/replay.json",
+          "sha256": "5f428a8ec5e84ac2e4e09bd82d71f0465051f55f062525fdda75add411a8eda0"
+        },
+        "snapshot": {
+          "path": "clean-private-copy/snapshot.json",
+          "sha256": "7f9c7d3a08552da5332b5798b830513d38d01258bca5609f79c8cb0775fb7f60"
+        }
+      },
+      "base_sha": "566bc0a65693ba7fc8262ba9003103a42a465452",
+      "category": "clean",
+      "family": "private-copy",
+      "head_sha": "50368197b787fc553620d0de723d0f4777de19a0",
+      "id": "clean-private-copy",
+      "provenance": {
+        "access": "authorized-repository-and-authored-fixtures",
+        "authored_by": "Hawk; not independently adjudicated",
+        "kind": "synthetic-overlay",
+        "redaction": "no-private-source-used",
+        "source": "sarcasticbirds/uncutgemini runtime/test protocol at source base/head; content is an authored overlay, NOT an actual commit snapshot"
+      },
+      "split": "holdout"
+    },
+    {
+      "artifacts": {
+        "context": {
+          "path": "seed-integer-total/context.txt",
+          "sha256": "4e0e4a9490557e5c8e5429dfcaf42c5b4bc22c89368252c2f79e0dd863aa03db"
+        },
+        "diff": {
+          "path": "seed-integer-total/change.diff",
+          "sha256": "3a2e3f1724098cdcb01bf2942b2730717eb0ee856539aece6dd38222ac0b6429"
+        },
+        "labels": {
+          "path": "labels/seed-integer-total.json",
+          "sha256": "d90827fccc7641cc079a54da11d00bb788d93a06d75a71fbec871ffa1e26e9da"
+        },
+        "reference": {
+          "path": "seed-integer-total/reference.txt",
+          "sha256": "3251dbf18617cd67c47707cb9bd1611dbac212ff0ee9814a75b8ce1f34b85aad"
+        },
+        "replay": {
+          "path": "seed-integer-total/replay.json",
+          "sha256": "e599500901acf86edb5c84ea897057cbeb798e33542d11280984a5d8505e214f"
+        },
+        "snapshot": {
+          "path": "seed-integer-total/snapshot.json",
+          "sha256": "8620f001171a6126a7b52e7c6f69b39257022bc6c617233cc4b91a9ae06deedf"
+        }
+      },
+      "base_sha": "566bc0a65693ba7fc8262ba9003103a42a465452",
+      "category": "seeded",
+      "family": "integer-total",
+      "head_sha": "50368197b787fc553620d0de723d0f4777de19a0",
+      "id": "seed-integer-total",
+      "provenance": {
+        "access": "authorized-repository-and-authored-fixtures",
+        "authored_by": "Hawk; not independently adjudicated",
+        "kind": "synthetic-overlay",
+        "redaction": "no-private-source-used",
+        "source": "sarcasticbirds/uncutgemini runtime/test protocol at source base/head; content is an authored overlay, NOT an actual commit snapshot"
+      },
+      "split": "holdout"
+    },
+    {
+      "artifacts": {
+        "context": {
+          "path": "clean-integer-total/context.txt",
+          "sha256": "4e0e4a9490557e5c8e5429dfcaf42c5b4bc22c89368252c2f79e0dd863aa03db"
+        },
+        "diff": {
+          "path": "clean-integer-total/change.diff",
+          "sha256": "acb4862f659ff93191cbf4c01d32079568ede6b0b23037fcce124838df081f15"
+        },
+        "labels": {
+          "path": "labels/clean-integer-total.json",
+          "sha256": "b0c64e12331a1989d7514110c0780dc6bdebbfaeab20756daad6bde4103fd041"
+        },
+        "reference": {
+          "path": "clean-integer-total/reference.txt",
+          "sha256": "3251dbf18617cd67c47707cb9bd1611dbac212ff0ee9814a75b8ce1f34b85aad"
+        },
+        "replay": {
+          "path": "clean-integer-total/replay.json",
+          "sha256": "ff56af31ddd65f9d3f7bf2d9a212706f418849f12985e50f4feb9bf1603fb65f"
+        },
+        "snapshot": {
+          "path": "clean-integer-total/snapshot.json",
+          "sha256": "464eff7b8739929502e858349180e1fe10c96587f49dd38c1a0e4b9c8f4193f9"
+        }
+      },
+      "base_sha": "566bc0a65693ba7fc8262ba9003103a42a465452",
+      "category": "clean",
+      "family": "integer-total",
+      "head_sha": "50368197b787fc553620d0de723d0f4777de19a0",
+      "id": "clean-integer-total",
+      "provenance": {
+        "access": "authorized-repository-and-authored-fixtures",
+        "authored_by": "Hawk; not independently adjudicated",
+        "kind": "synthetic-overlay",
+        "redaction": "no-private-source-used",
+        "source": "sarcasticbirds/uncutgemini runtime/test protocol at source base/head; content is an authored overlay, NOT an actual commit snapshot"
+      },
+      "split": "holdout"
+    },
+    {
+      "artifacts": {
+        "context": {
+          "path": "seed-safe-lookup/context.txt",
+          "sha256": "23cf0f3f18d58ab527c32eff9c4ba7cb2b28b7b9809cce73ab1b792b01e5b356"
+        },
+        "diff": {
+          "path": "seed-safe-lookup/change.diff",
+          "sha256": "571a7be16ec9ca3321fdf8379fc05b80fd9accd79ad2c649e7f509a1c4e15328"
+        },
+        "labels": {
+          "path": "labels/seed-safe-lookup.json",
+          "sha256": "09ec730f46278978fd663c4bff2c060ea9af140dda61059a8531bdec754188c9"
+        },
+        "reference": {
+          "path": "seed-safe-lookup/reference.txt",
+          "sha256": "ca9679c39942bf9a8feceda6e91840b8a1010c4ee1e8a972f17f30886dc30234"
+        },
+        "replay": {
+          "path": "seed-safe-lookup/replay.json",
+          "sha256": "4f3e27acc0610bd9aa0b0a66d9a04be152c0e4fe21eaa01cb38d0de57f1eaec0"
+        },
+        "snapshot": {
+          "path": "seed-safe-lookup/snapshot.json",
+          "sha256": "93dd3eda2c48cd1cecc7d6b69dff64991fd1192ccf80ff783cfc27d73a61c87e"
+        }
+      },
+      "base_sha": "566bc0a65693ba7fc8262ba9003103a42a465452",
+      "category": "seeded",
+      "family": "safe-lookup",
+      "head_sha": "50368197b787fc553620d0de723d0f4777de19a0",
+      "id": "seed-safe-lookup",
+      "provenance": {
+        "access": "authorized-repository-and-authored-fixtures",
+        "authored_by": "Hawk; not independently adjudicated",
+        "kind": "synthetic-overlay",
+        "redaction": "no-private-source-used",
+        "source": "sarcasticbirds/uncutgemini runtime/test protocol at source base/head; content is an authored overlay, NOT an actual commit snapshot"
+      },
+      "split": "holdout"
+    },
+    {
+      "artifacts": {
+        "context": {
+          "path": "clean-safe-lookup/context.txt",
+          "sha256": "23cf0f3f18d58ab527c32eff9c4ba7cb2b28b7b9809cce73ab1b792b01e5b356"
+        },
+        "diff": {
+          "path": "clean-safe-lookup/change.diff",
+          "sha256": "23539eaecd834673dfb5aed5b5b33d5cff8948cfbfdeefc3f5e0b26b6d391b7b"
+        },
+        "labels": {
+          "path": "labels/clean-safe-lookup.json",
+          "sha256": "e8831492854dd260b268baa905365c8e0b1d23ab6920fb82c235a38ceee30b23"
+        },
+        "reference": {
+          "path": "clean-safe-lookup/reference.txt",
+          "sha256": "ca9679c39942bf9a8feceda6e91840b8a1010c4ee1e8a972f17f30886dc30234"
+        },
+        "replay": {
+          "path": "clean-safe-lookup/replay.json",
+          "sha256": "8f9c0f14357df00e96681bcff299ab93e514fd899b4fe65e0a1c293245ffab0b"
+        },
+        "snapshot": {
+          "path": "clean-safe-lookup/snapshot.json",
+          "sha256": "219eb40b10772c79e8c1a9f22fbcbc3337747ddfdd5c5c6eeb11caddf24ae9d9"
+        }
+      },
+      "base_sha": "566bc0a65693ba7fc8262ba9003103a42a465452",
+      "category": "clean",
+      "family": "safe-lookup",
+      "head_sha": "50368197b787fc553620d0de723d0f4777de19a0",
+      "id": "clean-safe-lookup",
+      "provenance": {
+        "access": "authorized-repository-and-authored-fixtures",
+        "authored_by": "Hawk; not independently adjudicated",
+        "kind": "synthetic-overlay",
+        "redaction": "no-private-source-used",
+        "source": "sarcasticbirds/uncutgemini runtime/test protocol at source base/head; content is an authored overlay, NOT an actual commit snapshot"
+      },
+      "split": "holdout"
+    },
+    {
+      "artifacts": {
+        "context": {
+          "path": "clean-rename/context.txt",
+          "sha256": "6bcc1cc968a81ba16e5a65f60f56399ece771131974873d90fe4836967d99a07"
+        },
+        "diff": {
+          "path": "clean-rename/change.diff",
+          "sha256": "572eb87cd828c045dcd6d24a497c9468cb2080ced44c09652609d86dfa5f1a42"
+        },
+        "labels": {
+          "path": "labels/clean-rename.json",
+          "sha256": "fe9aa247ab0ebe9d6d1a6e5ffbbd99d395b72a4d7a19a22ada9c5935fcee05ce"
+        },
+        "reference": {
+          "path": "clean-rename/reference.txt",
+          "sha256": "86855d173acc7bb12239968f87266233721aa54589f313380f4b9899ccb2a915"
+        },
+        "replay": {
+          "path": "clean-rename/replay.json",
+          "sha256": "209f6a5ec4429f890c570f376b092682cedd994455e92d9a146dbb92f4944fcd"
+        },
+        "snapshot": {
+          "path": "clean-rename/snapshot.json",
+          "sha256": "47f27a092cd3596a5f5ddc3bf08d7655cd942d6342f5422a7941e246139aee2a"
+        }
+      },
+      "base_sha": "566bc0a65693ba7fc8262ba9003103a42a465452",
+      "category": "clean",
+      "family": "local-rename",
+      "head_sha": "50368197b787fc553620d0de723d0f4777de19a0",
+      "id": "clean-rename",
+      "provenance": {
+        "access": "authorized-repository-and-authored-fixtures",
+        "authored_by": "Hawk; not independently adjudicated",
+        "kind": "synthetic-overlay",
+        "redaction": "no-private-source-used",
+        "source": "sarcasticbirds/uncutgemini runtime/test protocol at source base/head; content is an authored overlay, NOT an actual commit snapshot"
+      },
+      "split": "holdout"
+    },
+    {
+      "artifacts": {
+        "context": {
+          "path": "clean-comment/context.txt",
+          "sha256": "5d1c438385b785feb59a6baad639d09793baa4e47b67dbc507cac8b4918ac52e"
+        },
+        "diff": {
+          "path": "clean-comment/change.diff",
+          "sha256": "c3258b8354fb8c22d72b33bf2226c96a4f987dacab71b1eda6d2d1eeceedc325"
+        },
+        "labels": {
+          "path": "labels/clean-comment.json",
+          "sha256": "80663d5401f3a2b7e343509d6df2799f3e250d785be87ecdc563cbbd4aa6e644"
+        },
+        "reference": {
+          "path": "clean-comment/reference.txt",
+          "sha256": "90de511480d3228a775d852af33470dced06bed20a9df76c4a3fd956a672582a"
+        },
+        "replay": {
+          "path": "clean-comment/replay.json",
+          "sha256": "200379278c0b8e1ab568b73d6bb32356b451e730a6661e80cf7b90649c1cd786"
+        },
+        "snapshot": {
+          "path": "clean-comment/snapshot.json",
+          "sha256": "4a967ac9addbe97e126ef4f05599b258c5bc73882a13c0b2930d782022143d51"
+        }
+      },
+      "base_sha": "566bc0a65693ba7fc8262ba9003103a42a465452",
+      "category": "clean",
+      "family": "comment-only",
+      "head_sha": "50368197b787fc553620d0de723d0f4777de19a0",
+      "id": "clean-comment",
+      "provenance": {
+        "access": "authorized-repository-and-authored-fixtures",
+        "authored_by": "Hawk; not independently adjudicated",
+        "kind": "synthetic-overlay",
+        "redaction": "no-private-source-used",
+        "source": "sarcasticbirds/uncutgemini runtime/test protocol at source base/head; content is an authored overlay, NOT an actual commit snapshot"
+      },
+      "split": "holdout"
+    },
+    {
+      "artifacts": {
+        "context": {
+          "path": "adversary-malformed/context.txt",
+          "sha256": "4dfa2e5df96b2520dccb41c1ee1ea3a1df0272badecf50878bbb67e0c11f55c8"
+        },
+        "diff": {
+          "path": "adversary-malformed/change.diff",
+          "sha256": "478c34c13743c18303c07db9465632a39bf7814205b2ed0da22d7f0ba51dfcb1"
+        },
+        "labels": {
+          "path": "labels/adversary-malformed.json",
+          "sha256": "3f935715511b1be3e39c0cd7a528b8f809e76f9a6c68021764ced445c79403e9"
+        },
+        "reference": {
+          "path": "adversary-malformed/reference.txt",
+          "sha256": "6d795fe3180bc5ef0f887f0476a0de13d36a1d9b9503e6f403f7c93abe4d8c52"
+        },
+        "replay": {
+          "path": "adversary-malformed/replay.json",
+          "sha256": "977190a652877ff76bdcf6b9f456c04f8a66a9e2148fa351bbeb5235c4337c09"
+        },
+        "snapshot": {
+          "path": "adversary-malformed/snapshot.json",
+          "sha256": "fdcd2e26ebd6f71d6b669e0462dc26780e3d5c73f6b5b5a085d95775b6cadc48"
+        }
+      },
+      "base_sha": "566bc0a65693ba7fc8262ba9003103a42a465452",
+      "category": "adversarial",
+      "family": "malformed-protocol",
+      "head_sha": "50368197b787fc553620d0de723d0f4777de19a0",
+      "id": "adversary-malformed",
+      "provenance": {
+        "access": "authorized-repository-and-authored-fixtures",
+        "authored_by": "Hawk; not independently adjudicated",
+        "kind": "synthetic-overlay",
+        "redaction": "no-private-source-used",
+        "source": "sarcasticbirds/uncutgemini runtime/test protocol at source base/head; content is an authored overlay, NOT an actual commit snapshot"
+      },
+      "split": "holdout"
+    },
+    {
+      "artifacts": {
+        "context": {
+          "path": "adversary-retries/context.txt",
+          "sha256": "b3e83d7856bf04462d0524d70a9496abf864f3aef457a6229450c4571ac281fd"
+        },
+        "diff": {
+          "path": "adversary-retries/change.diff",
+          "sha256": "478c34c13743c18303c07db9465632a39bf7814205b2ed0da22d7f0ba51dfcb1"
+        },
+        "labels": {
+          "path": "labels/adversary-retries.json",
+          "sha256": "1ed4491b7baf6a1392837bc8879575f8c466b9f35e7bda2a04e68dd2069c461b"
+        },
+        "reference": {
+          "path": "adversary-retries/reference.txt",
+          "sha256": "6d795fe3180bc5ef0f887f0476a0de13d36a1d9b9503e6f403f7c93abe4d8c52"
+        },
+        "replay": {
+          "path": "adversary-retries/replay.json",
+          "sha256": "adede497403ecfa35c4910e849153aa1a19dc6650913d718cd8cfa80160882f1"
+        },
+        "snapshot": {
+          "path": "adversary-retries/snapshot.json",
+          "sha256": "fdcd2e26ebd6f71d6b669e0462dc26780e3d5c73f6b5b5a085d95775b6cadc48"
+        }
+      },
+      "base_sha": "566bc0a65693ba7fc8262ba9003103a42a465452",
+      "category": "adversarial",
+      "family": "transport-protocol",
+      "head_sha": "50368197b787fc553620d0de723d0f4777de19a0",
+      "id": "adversary-retries",
+      "provenance": {
+        "access": "authorized-repository-and-authored-fixtures",
+        "authored_by": "Hawk; not independently adjudicated",
+        "kind": "synthetic-overlay",
+        "redaction": "no-private-source-used",
+        "source": "sarcasticbirds/uncutgemini runtime/test protocol at source base/head; content is an authored overlay, NOT an actual commit snapshot"
+      },
+      "split": "holdout"
+    },
+    {
+      "artifacts": {
+        "context": {
+          "path": "adversary-rejections/context.txt",
+          "sha256": "4f5358be0a9ceabf6311de9d02c7b7202ec9e209f80c3843d5333d07b2757a5e"
+        },
+        "diff": {
+          "path": "adversary-rejections/change.diff",
+          "sha256": "478c34c13743c18303c07db9465632a39bf7814205b2ed0da22d7f0ba51dfcb1"
+        },
+        "labels": {
+          "path": "labels/adversary-rejections.json",
+          "sha256": "c93c945d9c9436de279750bffb06e5306013d1b93519cdac34781152caf677ef"
+        },
+        "reference": {
+          "path": "adversary-rejections/reference.txt",
+          "sha256": "6d795fe3180bc5ef0f887f0476a0de13d36a1d9b9503e6f403f7c93abe4d8c52"
+        },
+        "replay": {
+          "path": "adversary-rejections/replay.json",
+          "sha256": "b741114cdd0a63e26a42ef1aa951e40322244fe667b7179c478317bf98eab696"
+        },
+        "snapshot": {
+          "path": "adversary-rejections/snapshot.json",
+          "sha256": "fdcd2e26ebd6f71d6b669e0462dc26780e3d5c73f6b5b5a085d95775b6cadc48"
+        }
+      },
+      "base_sha": "566bc0a65693ba7fc8262ba9003103a42a465452",
+      "category": "adversarial",
+      "family": "finding-protocol",
+      "head_sha": "50368197b787fc553620d0de723d0f4777de19a0",
+      "id": "adversary-rejections",
+      "provenance": {
+        "access": "authorized-repository-and-authored-fixtures",
+        "authored_by": "Hawk; not independently adjudicated",
+        "kind": "synthetic-overlay",
+        "redaction": "no-private-source-used",
+        "source": "sarcasticbirds/uncutgemini runtime/test protocol at source base/head; content is an authored overlay, NOT an actual commit snapshot"
+      },
+      "split": "holdout"
+    },
+    {
+      "artifacts": {
+        "context": {
+          "path": "adversary-coverage/context.txt",
+          "sha256": "655dc14480cd9d12e501f3afaec64975dcfbb9c449888e61d601f5d0d5e5ffc8"
+        },
+        "diff": {
+          "path": "adversary-coverage/change.diff",
+          "sha256": "478c34c13743c18303c07db9465632a39bf7814205b2ed0da22d7f0ba51dfcb1"
+        },
+        "labels": {
+          "path": "labels/adversary-coverage.json",
+          "sha256": "f270c33be0e2c07af709ebfc41da3557126a8f76cb562cfafe4c0683bd66cd74"
+        },
+        "reference": {
+          "path": "adversary-coverage/reference.txt",
+          "sha256": "6d795fe3180bc5ef0f887f0476a0de13d36a1d9b9503e6f403f7c93abe4d8c52"
+        },
+        "replay": {
+          "path": "adversary-coverage/replay.json",
+          "sha256": "8ff2137933204663eef3279493bc27adde10e421e94844612fa6c1502d70c338"
+        },
+        "snapshot": {
+          "path": "adversary-coverage/snapshot.json",
+          "sha256": "fdcd2e26ebd6f71d6b669e0462dc26780e3d5c73f6b5b5a085d95775b6cadc48"
+        }
+      },
+      "base_sha": "566bc0a65693ba7fc8262ba9003103a42a465452",
+      "category": "adversarial",
+      "family": "coverage-protocol",
+      "head_sha": "50368197b787fc553620d0de723d0f4777de19a0",
+      "id": "adversary-coverage",
+      "provenance": {
+        "access": "authorized-repository-and-authored-fixtures",
+        "authored_by": "Hawk; not independently adjudicated",
+        "kind": "synthetic-overlay",
+        "redaction": "no-private-source-used",
+        "source": "sarcasticbirds/uncutgemini runtime/test protocol at source base/head; content is an authored overlay, NOT an actual commit snapshot"
+      },
+      "split": "holdout"
+    }
+  ],
+  "inventory": {
+    "populated": {
+      "adversarial": 4,
+      "clean": 8,
+      "historical": 0,
+      "seeded": 6
+    },
+    "substantive_bug_target": 30,
+    "substantive_bugs": 6,
+    "target": {
+      "adversarial": 4,
+      "clean": 8,
+      "historical": 12,
+      "seeded": 6
+    }
+  },
+  "label_status": "hawk-provisional-unsealed",
+  "limitations": [
+    "18 real authored fixtures; 12 missing historical slots are NOT cases",
+    "6 provisional substantive bugs, not 30; clean labels not independently reviewed",
+    "6 development / 12 holdout real cases plus 4 / 8 provisional slots; no complete freeze",
+    "Holdout labels unsealed and author-visible; no blind grading or model-quality evidence",
+    "Synthetic overlays reference actual source base/head SHAs but are not historical commit content"
+  ],
+  "provisional_slots": [
+    {
+      "category": "historical",
+      "id": "missing-history-00",
+      "missing_source": "No curated authorized historical bug/fix packet with trigger, context and access provenance supplied; two available source commits are not twelve independently evidenced cases",
+      "split": "development"
+    },
+    {
+      "category": "historical",
+      "id": "missing-history-01",
+      "missing_source": "No curated authorized historical bug/fix packet with trigger, context and access provenance supplied; two available source commits are not twelve independently evidenced cases",
+      "split": "development"
+    },
+    {
+      "category": "historical",
+      "id": "missing-history-02",
+      "missing_source": "No curated authorized historical bug/fix packet with trigger, context and access provenance supplied; two available source commits are not twelve independently evidenced cases",
+      "split": "development"
+    },
+    {
+      "category": "historical",
+      "id": "missing-history-03",
+      "missing_source": "No curated authorized historical bug/fix packet with trigger, context and access provenance supplied; two available source commits are not twelve independently evidenced cases",
+      "split": "development"
+    },
+    {
+      "category": "historical",
+      "id": "missing-history-04",
+      "missing_source": "No curated authorized historical bug/fix packet with trigger, context and access provenance supplied; two available source commits are not twelve independently evidenced cases",
+      "split": "holdout"
+    },
+    {
+      "category": "historical",
+      "id": "missing-history-05",
+      "missing_source": "No curated authorized historical bug/fix packet with trigger, context and access provenance supplied; two available source commits are not twelve independently evidenced cases",
+      "split": "holdout"
+    },
+    {
+      "category": "historical",
+      "id": "missing-history-06",
+      "missing_source": "No curated authorized historical bug/fix packet with trigger, context and access provenance supplied; two available source commits are not twelve independently evidenced cases",
+      "split": "holdout"
+    },
+    {
+      "category": "historical",
+      "id": "missing-history-07",
+      "missing_source": "No curated authorized historical bug/fix packet with trigger, context and access provenance supplied; two available source commits are not twelve independently evidenced cases",
+      "split": "holdout"
+    },
+    {
+      "category": "historical",
+      "id": "missing-history-08",
+      "missing_source": "No curated authorized historical bug/fix packet with trigger, context and access provenance supplied; two available source commits are not twelve independently evidenced cases",
+      "split": "holdout"
+    },
+    {
+      "category": "historical",
+      "id": "missing-history-09",
+      "missing_source": "No curated authorized historical bug/fix packet with trigger, context and access provenance supplied; two available source commits are not twelve independently evidenced cases",
+      "split": "holdout"
+    },
+    {
+      "category": "historical",
+      "id": "missing-history-10",
+      "missing_source": "No curated authorized historical bug/fix packet with trigger, context and access provenance supplied; two available source commits are not twelve independently evidenced cases",
+      "split": "holdout"
+    },
+    {
+      "category": "historical",
+      "id": "missing-history-11",
+      "missing_source": "No curated authorized historical bug/fix packet with trigger, context and access provenance supplied; two available source commits are not twelve independently evidenced cases",
+      "split": "holdout"
+    }
+  ],
+  "schema_version": 1,
+  "schemas": {
+    "labels": {
+      "path": "labels.schema.json",
+      "sha256": "2e816c641f081bd9ff92de564228a8ceef2aeb9dfa6c84aa27fe658ec89b039d"
+    },
+    "manifest": {
+      "path": "manifest.schema.json",
+      "sha256": "396cfa7e183af62c4fa4197a7cf13871b890460ac02c85da56a9ce277a4f135a"
+    },
+    "replay": {
+      "path": "replay.schema.json",
+      "sha256": "258bbe03ca9e119ac221325d2cadd59fbb57d4b52109d668bdc289c512e6883b"
+    }
+  },
+  "split_frozen": false
+}

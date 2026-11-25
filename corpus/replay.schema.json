@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "attempts": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "enum": [
+              "",
+              "timeout",
+              "429",
+              "503"
+            ],
+            "type": "string"
+          },
+          "expected_status": {
+            "enum": [
+              "failed",
+              "partial",
+              "complete-clean",
+              "complete-findings",
+              "excluded/skipped"
+            ],
+            "type": "string"
+          },
+          "mock_rates_per_million": {
+            "additionalProperties": false,
+            "properties": {
+              "input": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "output_including_thinking": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "input",
+              "output_including_thinking"
+            ],
+            "type": "object"
+          },
+          "response": {},
+          "usage": {
+            "additionalProperties": false,
+            "properties": {
+              "input_tokens": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "output_tokens": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "state": {
+                "enum": [
+                  "measured",
+                  "estimated",
+                  "missing"
+                ],
+                "type": "string"
+              },
+              "thinking_tokens": {
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "state"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "response",
+          "error",
+          "expected_status",
+          "usage",
+          "mock_rates_per_million"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "expected_files": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "files": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "additions": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "deletions": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "filename": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "patch": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "filename",
+          "additions",
+          "deletions"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "schema_version": {
+      "const": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "files",
+    "expected_files",
+    "attempts"
+  ],
+  "type": "object"
+}

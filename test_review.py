@@ -37,8 +37,8 @@ class TestParseDiffRanges(unittest.TestCase):
         ranges = parse_diff_ranges(SAMPLE_DIFF)
         self.assertIn("src/app.py", ranges)
         self.assertEqual(len(ranges["src/app.py"]), 2)
-        self.assertEqual(ranges["src/app.py"][0], (10, 17))
-        self.assertEqual(ranges["src/app.py"][1], (32, 35))
+        self.assertEqual(ranges["src/app.py"][0], (12, 13))
+        self.assertEqual(ranges["src/app.py"][1], (33, 33))
 
     def test_single_line_hunk(self):
         diff = "diff --git a/f.py b/f.py\n@@ -1 +1 @@\n-old\n+new\n"
@@ -85,26 +85,23 @@ class TestValidateFindings(unittest.TestCase):
     def test_start_line_reversed(self):
         findings = [{"file": "src/app.py", "line": 12, "start_line": 15, "severity": "HIGH", "description": "bad"}]
         result = validate_findings(findings, self.ranges)
-        self.assertEqual(len(result), 1)
-        self.assertIsNone(result[0]["start_line"])
+        self.assertEqual(result, [])
 
     def test_start_line_outside_range(self):
         findings = [{"file": "src/app.py", "line": 12, "start_line": 5, "severity": "HIGH", "description": "bad"}]
         result = validate_findings(findings, self.ranges)
-        self.assertEqual(len(result), 1)
-        self.assertIsNone(result[0]["start_line"])
+        self.assertEqual(result, [])
 
     def test_valid_start_line(self):
-        findings = [{"file": "src/app.py", "line": 13, "start_line": 11, "severity": "HIGH", "description": "bad"}]
+        findings = [{"file": "src/app.py", "line": 13, "start_line": 12, "severity": "HIGH", "description": "bad"}]
         result = validate_findings(findings, self.ranges)
         self.assertEqual(len(result), 1)
-        self.assertEqual(result[0]["start_line"], 11)
+        self.assertEqual(result[0]["start_line"], 12)
 
     def test_start_line_cross_hunk(self):
         findings = [{"file": "src/app.py", "line": 33, "start_line": 12, "severity": "HIGH", "description": "bad"}]
         result = validate_findings(findings, self.ranges)
-        self.assertEqual(len(result), 1)
-        self.assertIsNone(result[0]["start_line"])
+        self.assertEqual(result, [])
 
 
 class TestFormatCommentBody(unittest.TestCase):
@@ -122,11 +119,10 @@ class TestFormatCommentBody(unittest.TestCase):
         self.assertIn("NIT", body)
         self.assertNotIn("suggestion", body)
 
-    def test_strips_fences_from_fix(self):
+    def test_rejects_fences_from_fix(self):
         finding = {"severity": "MEDIUM", "description": "test", "suggested_fix": "```python\nfixed\n```"}
-        body = format_comment_body(finding)
-        self.assertNotIn("```python", body)
-        self.assertIn("fixed", body)
+        with self.assertRaises(ValueError):
+            format_comment_body(finding)
 
 
 class TestBuildReviewPayload(unittest.TestCase):

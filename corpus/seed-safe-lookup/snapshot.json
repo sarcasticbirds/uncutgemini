@@ -1,0 +1,5 @@
+{
+  "base_content": "def lookup(mapping, key):\n    return mapping.get(key)\n",
+  "file": "fixture.py",
+  "head_content": "def lookup(mapping, key):\n    return mapping[key]\n"
+}

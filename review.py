@@ -1,4 +1,4 @@
-import datetime, fnmatch, hashlib, json, os, random, re, socket, sys, time, urllib.request, urllib.error
+import ast, datetime, fnmatch, hashlib, json, random, re
 
 SEVERITY_RANK = {"HIGH": 0, "MEDIUM": 1, "NIT": 2}
 SEVERITY_ICON = {"HIGH": "🔴", "MEDIUM": "🟡", "NIT": "🔵"}
@@ -308,8 +308,7 @@ def filter_diff(diff_text, exclude_patterns):
     keep = True
     for line in diff_text.splitlines(keepends=True):
         if line.startswith("diff --git"):
-            match = re.search(r" b/(.+)$", line.rstrip("\n"))
-            path = match.group(1) if match else ""
+            path = diff_path(line)
             base = path.rsplit("/", 1)[-1]
             keep = not any(
                 fnmatch.fnmatch(path, pat) or fnmatch.fnmatch(base, pat)
@@ -320,49 +319,93 @@ def filter_diff(diff_text, exclude_patterns):
     return "".join(kept)
 
 
+def diff_path(header):
+    # Git quotes UTF-8 as C-style octal bytes, not Unicode escapes.
+    match = re.fullmatch(r'diff --git ("(?:[^"\\]|\\.)*"|a/.*?) ("(?:[^"\\]|\\.)*"|b/.*)', header.rstrip("\n"))
+    if not match:
+        raise ValueError("Unrecognized diff header")
+    path = match.group(2)
+    if path.startswith('"'):
+        inner = "".join(char if ord(char) < 128 else "".join(f"\\{byte:03o}" for byte in char.encode("utf-8")) for char in path[1:-1])
+        path = ast.literal_eval('b"' + inner + '"').decode("utf-8")
+    if not path.startswith("b/"):
+        raise ValueError("Invalid destination path")
+    return path[2:]
+
+
 def parse_diff_ranges(diff_text):
     ranges = {}
     current_file = None
     for line in diff_text.splitlines():
         if line.startswith("diff --git"):
-            match = re.search(r" b/(.+)$", line)
-            if match:
-                current_file = match.group(1)
-                ranges.setdefault(current_file, [])
+            current_file = diff_path(line)
+            ranges.setdefault(current_file, [])
+            new_line = None
         elif line.startswith("@@") and current_file:
             hunk = re.search(r"\+(\d+)(?:,(\d+))?", line)
             if hunk:
                 start = int(hunk.group(1))
                 count = int(hunk.group(2)) if hunk.group(2) else 1
-                if count > 0:
-                    ranges[current_file].append((start, start + count - 1))
+                new_line = start
+        elif current_file and new_line is not None:
+            if line.startswith("+"):
+                spans = ranges[current_file]
+                if spans and spans[-1][1] == new_line - 1:
+                    spans[-1] = (spans[-1][0], new_line)
+                else:
+                    spans.append((new_line, new_line))
+                new_line += 1
+            elif line.startswith(" "):
+                new_line += 1
     return ranges
 
 
-def validate_findings(findings, valid_ranges):
+def validate_findings(findings, valid_ranges, audit=None):
+    audit = audit if audit is not None else {"rejected": [], "duplicates": 0}
     validated = []
-    for f in findings:
-        path = f.get("file", "")
-        line = f.get("line")
-        if not path or not isinstance(line, int):
-            print(f"::warning::Dropping finding with missing file/line: {f.get('description', '')[:80]}")
+    seen = set()
+    for index, f in enumerate(findings):
+        reason = finding_error(f, valid_ranges)
+        if reason:
+            audit["rejected"].append({"index": index, "reason": reason})
             continue
-        file_ranges = valid_ranges.get(path)
-        if not file_ranges:
-            print(f"::warning::Dropping finding for file not in diff: {path}")
+        key = json.dumps(f, sort_keys=True)
+        if key in seen:
+            audit["duplicates"] += 1
             continue
-        in_range = any(start <= line <= end for start, end in file_ranges)
-        if not in_range:
-            print(f"::warning::Dropping finding with line {line} outside diff ranges for {path}")
-            continue
-        start_line = f.get("start_line")
-        if isinstance(start_line, int):
-            if start_line > line:
-                f["start_line"] = None
-            elif not any(s <= start_line <= e and s <= line <= e for s, e in file_ranges):
-                f["start_line"] = None
-        validated.append(f)
+        seen.add(key)
+        validated.append(dict(f))
     return validated
+
+
+def finding_error(f, valid_ranges):
+    if not isinstance(f, dict):
+        return "finding-not-object"
+    required = {"file", "line", "severity", "description"}
+    if not required <= f.keys() or f.keys() - required - {"start_line", "suggested_fix"}:
+        return "finding-fields"
+    if not isinstance(f["severity"], str) or f["severity"] not in SEVERITY_RANK or not isinstance(f["description"], str) or not f["description"].strip():
+        return "finding-content"
+    if "```" in f["description"] or "~~~" in f["description"]:
+        return "description-fence"
+    path, line = f["file"], f["line"]
+    if not isinstance(path, str) or type(line) is not int or line < 1:
+        return "finding-location"
+    spans = valid_ranges.get(path, [])
+    start = f.get("start_line", line)
+    if type(start) is not int or start < 1 or start > line:
+        return "invalid-span"
+    if not any(s <= start <= line <= e for s, e in spans):
+        return "unchanged-or-outside-span"
+    fix = f.get("suggested_fix")
+    if fix is not None:
+        if not isinstance(fix, str) or not fix or "```" in fix or "~~~" in fix:
+            return "invalid-suggestion"
+        # Conservative bounded pass: multi-line replacements require a separate
+        # source-aware validator. Never narrow their replacement range silently.
+        if start != line or "\n" in fix or "\r" in fix or len(fix.encode()) > 4096:
+            return "unsafe-suggestion-span"
+    return None
 
 
 def format_comment_body(finding):
@@ -371,8 +414,8 @@ def format_comment_body(finding):
     body = f"**{icon} {sev}**\n\n{finding['description']}"
     fix = finding.get("suggested_fix")
     if fix:
-        fix = re.sub(r"^```\w*\s*", "", fix.strip())
-        fix = re.sub(r"\s*```$", "", fix)
+        if not isinstance(fix, str) or "```" in fix or "~~~" in fix or "\n" in fix or "\r" in fix or len(fix.encode()) > 4096:
+            raise ValueError("Unsafe suggestion")
         body += f"\n\n```suggestion\n{fix}\n```"
     return body
 
@@ -400,19 +443,6 @@ def build_failure_payload(reason, is_incremental, sha, fragments, diff=""):
         "body": "\n".join(body_parts),
         "comments": []
     }
-
-
-def write_payload(payload):
-    with open("/tmp/review-payload.json", "w") as f:
-        json.dump(payload, f, indent=2)
-    with open("/tmp/review-summary.md", "w") as f:
-        f.write(payload["body"])
-
-
-def fail_with_payload(reason, is_incremental, sha, fragments, diff=""):
-    print(f"::warning::{reason}")
-    write_payload(build_failure_payload(reason, is_incremental, sha, fragments, diff))
-    sys.exit(0)
 
 
 def build_review_payload(findings, summary, is_incremental, sha, fragments, diff=""):
@@ -573,188 +603,8 @@ def build_generation_config(model, diff_line_count):
 
 
 def main():
-    api_key = os.environ["GOOGLE_API_KEY"]
-    guidelines = os.environ.get("REVIEW_GUIDELINES", "")
-    model = os.environ.get("GEMINI_MODEL", "gemini-3.1-pro-preview")
-    min_severity = os.environ.get("MIN_SEVERITY", "MEDIUM").upper()
-    custom_prompt = os.environ.get("CUSTOM_PROMPT", "").strip()
-    extra_instructions = os.environ.get("EXTRA_INSTRUCTIONS", "").strip()
-    incremental = os.environ.get("INCREMENTAL", "false") == "true"
-    last_reviewed_sha = os.environ.get("LAST_REVIEWED_SHA", "")
-    min_rank = SEVERITY_RANK.get(min_severity, 1)
-
-    with open("/tmp/pr.diff") as f:
-        diff = f.read()
-
-    if not diff.strip():
-        print("Empty diff — nothing to review")
-        sys.exit(0)
-
-    fragments = read_fragments()
-
-    exclude_env = os.environ.get("EXCLUDE_PATHS", "").strip()
-    if exclude_env.lower() == "none":
-        exclude_paths = []
-    elif exclude_env:
-        exclude_paths = [p.strip() for p in exclude_env.split(",") if p.strip()]
-    else:
-        exclude_paths = DEFAULT_EXCLUDE_PATHS
-
-    raw_diff = diff
-    diff = filter_diff(diff, exclude_paths)
-    if not diff.strip():
-        print("No reviewable code changes after path exclusions")
-        write_payload(build_review_payload(
-            [], "Only excluded paths (docs, lockfiles) changed — no code to review.",
-            incremental, last_reviewed_sha, fragments, raw_diff,
-        ))
-        sys.exit(0)
-
-    full_diff = ""
-    if incremental:
-        try:
-            with open("/tmp/pr-full.diff") as f:
-                full_diff = f.read().strip()
-            if not full_diff.startswith("diff --git"):
-                full_diff = ""
-        except FileNotFoundError:
-            pass
-        if not full_diff:
-            print("::warning::Could not read full PR diff; falling back to incremental diff for validation")
-
-    valid_ranges = parse_diff_ranges(diff)
-    if incremental and full_diff:
-        pr_ranges = parse_diff_ranges(full_diff)
-        for path in list(valid_ranges):
-            if path not in pr_ranges:
-                del valid_ranges[path]
-                continue
-            pr_set = set()
-            for s, e in pr_ranges[path]:
-                pr_set.update(range(s, e + 1))
-            inc_set = set()
-            for s, e in valid_ranges[path]:
-                inc_set.update(range(s, e + 1))
-            merged = sorted(inc_set & pr_set)
-            if not merged:
-                del valid_ranges[path]
-                continue
-            new_ranges = []
-            for ln in merged:
-                if new_ranges and ln == new_ranges[-1][1] + 1:
-                    new_ranges[-1] = (new_ranges[-1][0], ln)
-                else:
-                    new_ranges.append((ln, ln))
-            valid_ranges[path] = new_ranges
-
-    if custom_prompt:
-        prompt = custom_prompt.replace("{diff}", diff).replace("{guidelines}", guidelines)
-        prompt = prompt.replace("{schema}", SCHEMA_INSTRUCTIONS)
-    else:
-        prompt = build_prompt(
-            diff, guidelines, extra_instructions, incremental,
-            last_reviewed_sha, filter_diff(full_diff, exclude_paths),
-        )
-
-    generation_config = build_generation_config(model, len(diff.splitlines()))
-
-    payload = json.dumps({
-        "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": generation_config
-    })
-
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
-
-    data = None
-    last_error = None
-    for attempt in range(2):
-        req = urllib.request.Request(url, data=payload.encode(), headers={
-            "Content-Type": "application/json",
-            "x-goog-api-key": api_key,
-        })
-        try:
-            with urllib.request.urlopen(req, timeout=GEMINI_TIMEOUT_SECONDS) as resp:
-                data = json.loads(resp.read())
-            break
-        except urllib.error.HTTPError as e:
-            body = e.read().decode()
-            if e.code in (429, 503) and attempt == 0:
-                print(f"Gemini returned {e.code}, retrying in 30s...")
-                time.sleep(30)
-                continue
-            last_error = f"Gemini API error {e.code}: {body[:200]}"
-            break
-        except (socket.timeout, TimeoutError) as e:
-            if attempt == 0:
-                print(f"Gemini request timed out, retrying in 30s...")
-                time.sleep(30)
-                continue
-            last_error = f"Gemini request timed out: {e}"
-            break
-        except urllib.error.URLError as e:
-            if isinstance(e.reason, (socket.timeout, TimeoutError)) and attempt == 0:
-                print(f"Gemini request timed out, retrying in 30s...")
-                time.sleep(30)
-                continue
-            last_error = f"Gemini request failed: {e}"
-            break
-        except Exception as e:
-            last_error = f"Gemini request failed: {e}"
-            break
-
-    if data is None:
-        fail_with_payload(last_error or "Gemini request failed", incremental, last_reviewed_sha, fragments, diff)
-
-    if "error" in data:
-        fail_with_payload(
-            f"Gemini error: {data['error'].get('message', 'unknown')}",
-            incremental, last_reviewed_sha, fragments, diff,
-        )
-
-    candidates = data.get("candidates", [])
-    if not candidates:
-        reason = data.get("promptFeedback", {}).get("blockReason", "no candidates")
-        fail_with_payload(f"Gemini blocked: {reason}", incremental, last_reviewed_sha, fragments, diff)
-
-    try:
-        parts = candidates[0]["content"]["parts"]
-        text = next(
-            (p["text"] for p in parts if "text" in p and not p.get("thought")),
-            parts[-1].get("text", "")
-        )
-        text = text.strip()
-    except (KeyError, IndexError, StopIteration, TypeError):
-        fail_with_payload("Gemini response had unexpected structure", incremental, last_reviewed_sha, fragments, diff)
-
-    text = re.sub(r"^```(?:json)?\s*", "", text)
-    text = re.sub(r"\s*```$", "", text)
-
-    try:
-        result = json.loads(text)
-    except json.JSONDecodeError:
-        if custom_prompt:
-            reason = "Custom prompt did not produce valid JSON. Ensure your prompt requests the expected response schema."
-        else:
-            reason = f"Gemini returned non-JSON: {text[:200]}"
-        fail_with_payload(reason, incremental, last_reviewed_sha, fragments, diff)
-
-    findings = [f for f in result.get("findings", [])
-                if SEVERITY_RANK.get(f.get("severity", "NIT"), 2) <= min_rank]
-
-    findings = validate_findings(findings, valid_ranges)
-
-    summary = result.get("summary", "No issues found.")
-
-    review_payload = build_review_payload(
-        findings, summary, incremental, last_reviewed_sha, fragments, diff
-    )
-
-    write_payload(review_payload)
-
-    if findings:
-        print(f"Found {len(findings)} finding(s)")
-    else:
-        print(f"Clean: {summary}")
+    from runtime import run
+    run()
 
 
 if __name__ == "__main__":

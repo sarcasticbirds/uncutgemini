@@ -1,0 +1,5 @@
+{
+  "base_content": "def within_limit(size, limit):\n    return size <= limit\n",
+  "file": "fixture.py",
+  "head_content": "def within_limit(size, limit):\n    return size < limit\n"
+}

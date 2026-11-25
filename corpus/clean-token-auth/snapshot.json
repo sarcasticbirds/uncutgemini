@@ -1,0 +1,5 @@
+{
+  "base_content": "def authorized(token, expected):\n    return token == expected\n",
+  "file": "fixture.py",
+  "head_content": "def authorized(token, expected):\n    matches = token == expected\n    return matches\n"
+}

@@ -1,0 +1,5 @@
+db4d0a86a150e278a5893fe1bf67c85a50f20e15
+4c4a60a7f9f3897c5abc0077f1ddbbf8a5cfc654 65427d885f4accbaabaf07f86356eb2db549426a
+Merge pull request #1 from sarcasticbird/feature/manual-trigger
+
+feat: manual trigger support via pr-number input

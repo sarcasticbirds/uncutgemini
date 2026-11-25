@@ -1,0 +1,5 @@
+{
+  "base_content": "def total(values):\n    return sum(values)\n",
+  "file": "fixture.py",
+  "head_content": "def total(values):\n    return sum(set(values))\n"
+}

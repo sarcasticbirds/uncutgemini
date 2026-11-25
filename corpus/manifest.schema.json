@@ -1,0 +1,418 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "cases": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "artifacts": {
+            "additionalProperties": false,
+            "properties": {
+              "context": {
+                "additionalProperties": false,
+                "properties": {
+                  "path": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "sha256": {
+                    "pattern": "[a-f0-9]{64}",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "type": "object"
+              },
+              "diff": {
+                "additionalProperties": false,
+                "properties": {
+                  "path": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "sha256": {
+                    "pattern": "[a-f0-9]{64}",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "type": "object"
+              },
+              "labels": {
+                "additionalProperties": false,
+                "properties": {
+                  "path": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "sha256": {
+                    "pattern": "[a-f0-9]{64}",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "type": "object"
+              },
+              "reference": {
+                "additionalProperties": false,
+                "properties": {
+                  "path": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "sha256": {
+                    "pattern": "[a-f0-9]{64}",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "type": "object"
+              },
+              "replay": {
+                "additionalProperties": false,
+                "properties": {
+                  "path": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "sha256": {
+                    "pattern": "[a-f0-9]{64}",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "type": "object"
+              },
+              "snapshot": {
+                "additionalProperties": false,
+                "properties": {
+                  "path": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "sha256": {
+                    "pattern": "[a-f0-9]{64}",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "snapshot",
+              "diff",
+              "context",
+              "reference",
+              "labels",
+              "replay"
+            ],
+            "type": "object"
+          },
+          "base_sha": {
+            "pattern": "[a-f0-9]{40}",
+            "type": "string"
+          },
+          "category": {
+            "enum": [
+              "historical",
+              "seeded",
+              "clean",
+              "adversarial"
+            ],
+            "type": "string"
+          },
+          "family": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "head_sha": {
+            "pattern": "[a-f0-9]{40}",
+            "type": "string"
+          },
+          "id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "provenance": {
+            "additionalProperties": false,
+            "properties": {
+              "access": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "authored_by": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "kind": {
+                "const": "synthetic-overlay"
+              },
+              "redaction": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "source": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "access",
+              "redaction",
+              "source",
+              "authored_by"
+            ],
+            "type": "object"
+          },
+          "split": {
+            "enum": [
+              "development",
+              "holdout"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "category",
+          "family",
+          "split",
+          "base_sha",
+          "head_sha",
+          "provenance",
+          "artifacts"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "inventory": {
+      "additionalProperties": false,
+      "properties": {
+        "populated": {
+          "additionalProperties": false,
+          "properties": {
+            "adversarial": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "clean": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "historical": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "seeded": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "historical",
+            "seeded",
+            "clean",
+            "adversarial"
+          ],
+          "type": "object"
+        },
+        "substantive_bug_target": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "substantive_bugs": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "target": {
+          "additionalProperties": false,
+          "properties": {
+            "adversarial": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "clean": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "historical": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "seeded": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "historical",
+            "seeded",
+            "clean",
+            "adversarial"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "target",
+        "populated",
+        "substantive_bug_target",
+        "substantive_bugs"
+      ],
+      "type": "object"
+    },
+    "label_status": {
+      "const": "hawk-provisional-unsealed"
+    },
+    "limitations": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "provisional_slots": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "enum": [
+              "historical",
+              "seeded",
+              "clean",
+              "adversarial"
+            ],
+            "type": "string"
+          },
+          "id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "missing_source": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "split": {
+            "enum": [
+              "development",
+              "holdout"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "category",
+          "split",
+          "missing_source"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "schemas": {
+      "additionalProperties": false,
+      "properties": {
+        "labels": {
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "sha256": {
+              "pattern": "[a-f0-9]{64}",
+              "type": "string"
+            }
+          },
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "type": "object"
+        },
+        "manifest": {
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "sha256": {
+              "pattern": "[a-f0-9]{64}",
+              "type": "string"
+            }
+          },
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "type": "object"
+        },
+        "replay": {
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "sha256": {
+              "pattern": "[a-f0-9]{64}",
+              "type": "string"
+            }
+          },
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "manifest",
+        "labels",
+        "replay"
+      ],
+      "type": "object"
+    },
+    "split_frozen": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema_version",
+    "label_status",
+    "schemas",
+    "split_frozen",
+    "inventory",
+    "cases",
+    "provisional_slots",
+    "limitations"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,2 @@
+Authored contract: values=[1], item=2; contract leaves caller list unchanged and returns [1,2]
+Fixture is inert synthetic overlay data, not code present at source Git revisions.

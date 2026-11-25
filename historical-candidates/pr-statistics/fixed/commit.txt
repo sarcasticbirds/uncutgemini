@@ -1,0 +1,8 @@
+1a59e878ea812907cd9c61e4e2366c6d1a4a9b72
+db4d0a86a150e278a5893fe1bf67c85a50f20e15
+fix: use gh pr view for PR stats instead of invalid --stat flag
+
+gh pr diff --stat doesn't exist, silently failing and producing
+"0 lines across 0 files" in every review. Switch to gh pr view
+--json which reliably returns additions, deletions, and file count.
+

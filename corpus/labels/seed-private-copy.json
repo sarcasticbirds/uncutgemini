@@ -1,0 +1,18 @@
+{
+  "bugs": [
+    {
+      "file": "fixture.py",
+      "fix_evidence": "reference.txt restores the contract; static authored example, not an executed or historical fix",
+      "id": "private-copy",
+      "impact": "Corrupts shared list state observed by later callers",
+      "line": 2,
+      "root_cause": "Mutates caller-owned input",
+      "severity": "HIGH",
+      "trigger": "values=[1], item=2; contract leaves caller list unchanged and returns [1,2]"
+    }
+  ],
+  "case_id": "seed-private-copy",
+  "clean_rationale": "",
+  "schema_version": 1,
+  "status": "hawk-provisional-unsealed"
+}

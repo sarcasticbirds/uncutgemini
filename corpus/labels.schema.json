@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "bugs": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "file": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "fix_evidence": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "impact": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "line": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "root_cause": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "HIGH",
+              "MEDIUM"
+            ],
+            "type": "string"
+          },
+          "trigger": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "trigger",
+          "root_cause",
+          "impact",
+          "severity",
+          "file",
+          "line",
+          "fix_evidence"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "case_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "clean_rationale": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "status": {
+      "const": "hawk-provisional-unsealed"
+    }
+  },
+  "required": [
+    "schema_version",
+    "case_id",
+    "status",
+    "clean_rationale",
+    "bugs"
+  ],
+  "type": "object"
+}

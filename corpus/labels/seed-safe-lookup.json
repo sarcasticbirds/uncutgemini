@@ -1,0 +1,18 @@
+{
+  "bugs": [
+    {
+      "file": "fixture.py",
+      "fix_evidence": "reference.txt restores the contract; static authored example, not an executed or historical fix",
+      "id": "safe-lookup",
+      "impact": "KeyError instead of supported missing result",
+      "line": 2,
+      "root_cause": "Removed missing-key fallback",
+      "severity": "HIGH",
+      "trigger": "mapping={}, key='absent'; contract returns None"
+    }
+  ],
+  "case_id": "seed-safe-lookup",
+  "clean_rationale": "",
+  "schema_version": 1,
+  "status": "hawk-provisional-unsealed"
+}
